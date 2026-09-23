@@ -1,0 +1,918 @@
+vehicle_id,component,event_type,days_ago,notes,severity_hours
+V-1000,cooling,preventive_service,9,Deferred cooling work pending parts (9d ago),2422
+V-1000,cooling,fault_code,65,Deferred cooling work pending parts (65d ago),2198
+V-1001,cooling,preventive_service,3,Elevated cooling temperature recorded (3d ago),2077
+V-1001,engine,preventive_service,4,engine inspection — wear within limits (4d ago),409
+V-1001,engine,preventive_service,7,Elevated engine temperature recorded (7d ago),397
+V-1001,cooling,fault_code,46,cooling inspection — wear within limits (46d ago),1905
+V-1001,engine,parts_replacement,54,Scheduled engine PM completed (54d ago),209
+V-1001,cooling,fault_code,55,cooling inspection — wear within limits (55d ago),1869
+V-1001,cooling,inspection,92,cooling inspection — wear within limits (92d ago),1721
+V-1001,engine,oil_analysis,117,Elevated engine temperature recorded (117d ago),0
+V-1001,engine,corrective_repair,129,Scheduled engine PM completed (129d ago),0
+V-1001,cooling,parts_replacement,162,Deferred cooling work pending parts (162d ago),1441
+V-1002,electrical,preventive_service,19,Scheduled electrical PM completed (19d ago),2548
+V-1002,suspension,corrective_repair,36,Scheduled suspension PM completed (36d ago),4449
+V-1002,transmission,fault_code,37,Deferred transmission work pending parts (37d ago),169
+V-1002,electrical,parts_replacement,67,Scheduled electrical PM completed (67d ago),2356
+V-1002,transmission,corrective_repair,71,transmission inspection — wear within limits (71d ago),33
+V-1002,suspension,inspection,91,suspension fault cleared after service (91d ago),4229
+V-1002,suspension,preventive_service,102,suspension inspection — wear within limits (102d ago),4185
+V-1002,suspension,preventive_service,152,suspension fault cleared after service (152d ago),3985
+V-1002,electrical,fault_code,156,Elevated electrical temperature recorded (156d ago),2000
+V-1003,suspension,parts_replacement,19,Deferred suspension work pending parts (19d ago),761
+V-1003,suspension,parts_replacement,32,Deferred suspension work pending parts (32d ago),709
+V-1003,suspension,preventive_service,76,Elevated suspension temperature recorded (76d ago),533
+V-1003,suspension,corrective_repair,159,Deferred suspension work pending parts (159d ago),201
+V-1003,suspension,corrective_repair,159,suspension inspection — wear within limits (159d ago),201
+V-1004,electrical,fault_code,27,Scheduled electrical PM completed (27d ago),2972
+V-1004,brakes,preventive_service,37,Deferred brakes work pending parts (37d ago),689
+V-1004,electrical,preventive_service,54,electrical inspection — wear within limits (54d ago),2864
+V-1004,electrical,inspection,92,Scheduled electrical PM completed (92d ago),2712
+V-1004,brakes,fault_code,114,Deferred brakes work pending parts (114d ago),381
+V-1004,electrical,corrective_repair,118,electrical inspection — wear within limits (118d ago),2608
+V-1004,electrical,parts_replacement,128,Elevated electrical temperature recorded (128d ago),2568
+V-1004,brakes,parts_replacement,135,Scheduled brakes PM completed (135d ago),297
+V-1004,electrical,preventive_service,166,electrical inspection — wear within limits (166d ago),2416
+V-1005,suspension,parts_replacement,16,Elevated suspension temperature recorded (16d ago),4427
+V-1005,transmission,oil_analysis,24,Scheduled transmission PM completed (24d ago),2699
+V-1005,suspension,inspection,31,Elevated suspension temperature recorded (31d ago),4367
+V-1005,transmission,parts_replacement,31,Deferred transmission work pending parts (31d ago),2671
+V-1005,suspension,fault_code,43,suspension fault cleared after service (43d ago),4319
+V-1005,transmission,corrective_repair,85,Scheduled transmission PM completed (85d ago),2455
+V-1005,transmission,preventive_service,115,transmission inspection — wear within limits (115d ago),2335
+V-1005,engine,parts_replacement,159,Scheduled engine PM completed (159d ago),969
+V-1005,suspension,preventive_service,165,Scheduled suspension PM completed (165d ago),3831
+V-1005,engine,parts_replacement,179,Elevated engine temperature recorded (179d ago),889
+V-1005,transmission,corrective_repair,179,Deferred transmission work pending parts (179d ago),2079
+V-1006,hydraulics,oil_analysis,40,hydraulics inspection — wear within limits (40d ago),559
+V-1006,brakes,parts_replacement,65,Scheduled brakes PM completed (65d ago),3705
+V-1006,hydraulics,fault_code,70,Scheduled hydraulics PM completed (70d ago),439
+V-1006,brakes,corrective_repair,136,brakes inspection — wear within limits (136d ago),3421
+V-1006,brakes,parts_replacement,147,Elevated brakes temperature recorded (147d ago),3377
+V-1006,hydraulics,oil_analysis,173,Elevated hydraulics temperature recorded (173d ago),27
+V-1007,hydraulics,preventive_service,20,Deferred hydraulics work pending parts (20d ago),4642
+V-1007,transmission,inspection,29,Elevated transmission temperature recorded (29d ago),421
+V-1007,transmission,parts_replacement,40,Deferred transmission work pending parts (40d ago),377
+V-1007,transmission,oil_analysis,56,transmission inspection — wear within limits (56d ago),313
+V-1007,suspension,corrective_repair,59,Deferred suspension work pending parts (59d ago),3029
+V-1007,hydraulics,oil_analysis,77,hydraulics fault cleared after service (77d ago),4414
+V-1007,suspension,preventive_service,84,suspension inspection — wear within limits (84d ago),2929
+V-1007,suspension,parts_replacement,90,Elevated suspension temperature recorded (90d ago),2905
+V-1007,hydraulics,preventive_service,94,hydraulics fault cleared after service (94d ago),4346
+V-1007,hydraulics,preventive_service,115,Deferred hydraulics work pending parts (115d ago),4262
+V-1007,transmission,oil_analysis,116,transmission fault cleared after service (116d ago),73
+V-1007,hydraulics,fault_code,120,Scheduled hydraulics PM completed (120d ago),4242
+V-1007,transmission,inspection,151,transmission inspection — wear within limits (151d ago),0
+V-1007,hydraulics,corrective_repair,160,Scheduled hydraulics PM completed (160d ago),4082
+V-1007,suspension,preventive_service,169,Elevated suspension temperature recorded (169d ago),2589
+V-1008,hydraulics,inspection,36,Deferred hydraulics work pending parts (36d ago),2550
+V-1008,hydraulics,corrective_repair,60,hydraulics fault cleared after service (60d ago),2454
+V-1008,hydraulics,oil_analysis,139,Scheduled hydraulics PM completed (139d ago),2138
+V-1008,hydraulics,inspection,167,Deferred hydraulics work pending parts (167d ago),2026
+V-1009,brakes,corrective_repair,38,Scheduled brakes PM completed (38d ago),2930
+V-1009,cooling,oil_analysis,46,cooling inspection — wear within limits (46d ago),1693
+V-1009,brakes,preventive_service,66,brakes inspection — wear within limits (66d ago),2818
+V-1009,brakes,corrective_repair,83,Deferred brakes work pending parts (83d ago),2750
+V-1009,cooling,parts_replacement,99,cooling inspection — wear within limits (99d ago),1481
+V-1009,brakes,preventive_service,100,Elevated brakes temperature recorded (100d ago),2682
+V-1009,cooling,corrective_repair,113,cooling inspection — wear within limits (113d ago),1425
+V-1009,cooling,oil_analysis,144,Elevated cooling temperature recorded (144d ago),1301
+V-1009,cooling,oil_analysis,145,cooling inspection — wear within limits (145d ago),1297
+V-1009,cooling,parts_replacement,172,cooling inspection — wear within limits (172d ago),1189
+V-1010,engine,corrective_repair,52,Scheduled engine PM completed (52d ago),4836
+V-1010,engine,parts_replacement,58,engine fault cleared after service (58d ago),4812
+V-1010,engine,preventive_service,86,engine fault cleared after service (86d ago),4700
+V-1010,engine,parts_replacement,126,Scheduled engine PM completed (126d ago),4540
+V-1010,engine,inspection,141,engine fault cleared after service (141d ago),4480
+V-1011,hydraulics,fault_code,3,Deferred hydraulics work pending parts (3d ago),2859
+V-1011,transmission,preventive_service,4,Deferred transmission work pending parts (4d ago),4896
+V-1011,hydraulics,preventive_service,20,Elevated hydraulics temperature recorded (20d ago),2791
+V-1011,transmission,inspection,33,Scheduled transmission PM completed (33d ago),4780
+V-1011,cooling,oil_analysis,45,Scheduled cooling PM completed (45d ago),3486
+V-1011,cooling,oil_analysis,62,Scheduled cooling PM completed (62d ago),3418
+V-1011,hydraulics,preventive_service,98,Elevated hydraulics temperature recorded (98d ago),2479
+V-1011,cooling,oil_analysis,101,cooling inspection — wear within limits (101d ago),3262
+V-1011,cooling,fault_code,110,cooling fault cleared after service (110d ago),3226
+V-1011,hydraulics,fault_code,114,Elevated hydraulics temperature recorded (114d ago),2415
+V-1011,hydraulics,parts_replacement,131,Deferred hydraulics work pending parts (131d ago),2347
+V-1011,transmission,inspection,134,Scheduled transmission PM completed (134d ago),4376
+V-1011,cooling,inspection,137,Scheduled cooling PM completed (137d ago),3118
+V-1011,cooling,preventive_service,158,cooling fault cleared after service (158d ago),3034
+V-1011,hydraulics,fault_code,164,hydraulics inspection — wear within limits (164d ago),2215
+V-1012,engine,inspection,38,Deferred engine work pending parts (38d ago),4432
+V-1012,engine,oil_analysis,76,Deferred engine work pending parts (76d ago),4280
+V-1012,engine,oil_analysis,146,engine fault cleared after service (146d ago),4000
+V-1012,engine,corrective_repair,156,Elevated engine temperature recorded (156d ago),3960
+V-1012,engine,oil_analysis,161,engine fault cleared after service (161d ago),3940
+V-1012,engine,fault_code,177,engine inspection — wear within limits (177d ago),3876
+V-1013,hydraulics,inspection,129,Scheduled hydraulics PM completed (129d ago),2278
+V-1013,hydraulics,oil_analysis,132,Scheduled hydraulics PM completed (132d ago),2266
+V-1014,electrical,oil_analysis,27,Elevated electrical temperature recorded (27d ago),3734
+V-1014,electrical,inspection,68,electrical fault cleared after service (68d ago),3570
+V-1014,electrical,oil_analysis,128,Deferred electrical work pending parts (128d ago),3330
+V-1014,electrical,preventive_service,147,electrical fault cleared after service (147d ago),3254
+V-1014,electrical,fault_code,165,Deferred electrical work pending parts (165d ago),3182
+V-1015,electrical,fault_code,45,electrical fault cleared after service (45d ago),34
+V-1015,engine,oil_analysis,71,Scheduled engine PM completed (71d ago),1950
+V-1015,electrical,inspection,123,electrical fault cleared after service (123d ago),0
+V-1015,engine,parts_replacement,144,Deferred engine work pending parts (144d ago),1658
+V-1015,engine,oil_analysis,166,engine inspection — wear within limits (166d ago),1570
+V-1015,electrical,oil_analysis,169,Elevated electrical temperature recorded (169d ago),0
+V-1016,suspension,corrective_repair,3,Elevated suspension temperature recorded (3d ago),5124
+V-1016,suspension,inspection,67,Scheduled suspension PM completed (67d ago),4868
+V-1016,suspension,oil_analysis,84,suspension inspection — wear within limits (84d ago),4800
+V-1016,suspension,preventive_service,110,suspension inspection — wear within limits (110d ago),4696
+V-1016,suspension,inspection,146,Scheduled suspension PM completed (146d ago),4552
+V-1017,cooling,corrective_repair,38,Deferred cooling work pending parts (38d ago),1188
+V-1017,cooling,oil_analysis,40,cooling fault cleared after service (40d ago),1180
+V-1017,cooling,oil_analysis,71,Elevated cooling temperature recorded (71d ago),1056
+V-1017,cooling,oil_analysis,91,cooling inspection — wear within limits (91d ago),976
+V-1018,suspension,parts_replacement,49,suspension inspection — wear within limits (49d ago),4585
+V-1018,suspension,inspection,112,suspension fault cleared after service (112d ago),4333
+V-1019,brakes,inspection,23,brakes fault cleared after service (23d ago),2121
+V-1019,brakes,preventive_service,30,Scheduled brakes PM completed (30d ago),2093
+V-1019,suspension,inspection,44,suspension inspection — wear within limits (44d ago),4373
+V-1019,engine,oil_analysis,47,engine fault cleared after service (47d ago),517
+V-1019,brakes,parts_replacement,52,brakes fault cleared after service (52d ago),2005
+V-1019,brakes,corrective_repair,72,Scheduled brakes PM completed (72d ago),1925
+V-1019,brakes,corrective_repair,98,Elevated brakes temperature recorded (98d ago),1821
+V-1019,engine,fault_code,102,Deferred engine work pending parts (102d ago),297
+V-1019,engine,inspection,109,Deferred engine work pending parts (109d ago),269
+V-1019,suspension,inspection,127,suspension inspection — wear within limits (127d ago),4041
+V-1019,brakes,parts_replacement,169,Elevated brakes temperature recorded (169d ago),1537
+V-1019,engine,parts_replacement,178,engine inspection — wear within limits (178d ago),0
+V-1020,transmission,inspection,105,transmission inspection — wear within limits (105d ago),2756
+V-1020,transmission,inspection,151,Deferred transmission work pending parts (151d ago),2572
+V-1020,transmission,inspection,173,Elevated transmission temperature recorded (173d ago),2484
+V-1021,engine,fault_code,15,Deferred engine work pending parts (15d ago),5032
+V-1021,engine,inspection,51,engine inspection — wear within limits (51d ago),4888
+V-1021,engine,oil_analysis,72,engine fault cleared after service (72d ago),4804
+V-1021,engine,parts_replacement,125,Elevated engine temperature recorded (125d ago),4592
+V-1021,engine,parts_replacement,151,Scheduled engine PM completed (151d ago),4488
+V-1021,engine,inspection,163,Elevated engine temperature recorded (163d ago),4440
+V-1022,suspension,preventive_service,23,Elevated suspension temperature recorded (23d ago),1432
+V-1022,electrical,fault_code,29,electrical fault cleared after service (29d ago),693
+V-1022,electrical,fault_code,35,electrical inspection — wear within limits (35d ago),669
+V-1022,electrical,inspection,42,Deferred electrical work pending parts (42d ago),641
+V-1022,electrical,oil_analysis,64,electrical inspection — wear within limits (64d ago),553
+V-1022,electrical,fault_code,65,electrical inspection — wear within limits (65d ago),549
+V-1022,suspension,fault_code,68,suspension fault cleared after service (68d ago),1252
+V-1022,suspension,oil_analysis,81,suspension fault cleared after service (81d ago),1200
+V-1022,suspension,fault_code,82,Elevated suspension temperature recorded (82d ago),1196
+V-1022,suspension,parts_replacement,152,Elevated suspension temperature recorded (152d ago),916
+V-1023,hydraulics,fault_code,37,hydraulics inspection — wear within limits (37d ago),1541
+V-1023,brakes,fault_code,61,brakes inspection — wear within limits (61d ago),3373
+V-1023,transmission,fault_code,66,Deferred transmission work pending parts (66d ago),3581
+V-1023,transmission,fault_code,99,Elevated transmission temperature recorded (99d ago),3449
+V-1023,transmission,parts_replacement,115,Elevated transmission temperature recorded (115d ago),3385
+V-1023,brakes,fault_code,130,brakes fault cleared after service (130d ago),3097
+V-1023,hydraulics,parts_replacement,135,hydraulics inspection — wear within limits (135d ago),1149
+V-1023,brakes,oil_analysis,135,Elevated brakes temperature recorded (135d ago),3077
+V-1023,hydraulics,fault_code,155,hydraulics fault cleared after service (155d ago),1069
+V-1023,brakes,inspection,160,brakes fault cleared after service (160d ago),2977
+V-1023,brakes,parts_replacement,165,Deferred brakes work pending parts (165d ago),2957
+V-1023,brakes,fault_code,172,Elevated brakes temperature recorded (172d ago),2929
+V-1023,hydraulics,fault_code,178,Elevated hydraulics temperature recorded (178d ago),977
+V-1024,hydraulics,corrective_repair,20,hydraulics fault cleared after service (20d ago),5197
+V-1024,cooling,fault_code,72,cooling fault cleared after service (72d ago),2990
+V-1024,hydraulics,oil_analysis,118,Deferred hydraulics work pending parts (118d ago),4805
+V-1024,cooling,fault_code,126,cooling fault cleared after service (126d ago),2774
+V-1024,hydraulics,corrective_repair,137,Scheduled hydraulics PM completed (137d ago),4729
+V-1024,hydraulics,corrective_repair,148,Deferred hydraulics work pending parts (148d ago),4685
+V-1024,cooling,oil_analysis,151,cooling inspection — wear within limits (151d ago),2674
+V-1024,cooling,corrective_repair,164,Deferred cooling work pending parts (164d ago),2622
+V-1025,cooling,corrective_repair,4,cooling inspection — wear within limits (4d ago),2037
+V-1025,suspension,corrective_repair,30,Scheduled suspension PM completed (30d ago),2228
+V-1025,brakes,oil_analysis,76,brakes inspection — wear within limits (76d ago),2443
+V-1025,suspension,corrective_repair,95,suspension fault cleared after service (95d ago),1968
+V-1025,suspension,fault_code,103,suspension inspection — wear within limits (103d ago),1936
+V-1025,brakes,corrective_repair,109,Deferred brakes work pending parts (109d ago),2311
+V-1025,cooling,preventive_service,114,cooling inspection — wear within limits (114d ago),1597
+V-1025,suspension,inspection,137,Deferred suspension work pending parts (137d ago),1800
+V-1025,suspension,corrective_repair,145,Deferred suspension work pending parts (145d ago),1768
+V-1025,brakes,corrective_repair,157,Scheduled brakes PM completed (157d ago),2119
+V-1026,cooling,inspection,16,Deferred cooling work pending parts (16d ago),3013
+V-1026,cooling,parts_replacement,22,Scheduled cooling PM completed (22d ago),2989
+V-1026,cooling,oil_analysis,62,Scheduled cooling PM completed (62d ago),2829
+V-1026,cooling,preventive_service,125,Deferred cooling work pending parts (125d ago),2577
+V-1026,cooling,parts_replacement,152,Elevated cooling temperature recorded (152d ago),2469
+V-1026,cooling,fault_code,166,Elevated cooling temperature recorded (166d ago),2413
+V-1027,suspension,preventive_service,4,Elevated suspension temperature recorded (4d ago),5467
+V-1027,brakes,parts_replacement,14,brakes inspection — wear within limits (14d ago),1624
+V-1027,brakes,parts_replacement,14,brakes fault cleared after service (14d ago),1624
+V-1027,suspension,inspection,15,suspension inspection — wear within limits (15d ago),5423
+V-1027,suspension,parts_replacement,16,suspension fault cleared after service (16d ago),5419
+V-1027,engine,parts_replacement,101,Elevated engine temperature recorded (101d ago),3128
+V-1027,brakes,preventive_service,101,Elevated brakes temperature recorded (101d ago),1276
+V-1027,brakes,inspection,125,Scheduled brakes PM completed (125d ago),1180
+V-1027,suspension,preventive_service,133,Deferred suspension work pending parts (133d ago),4951
+V-1027,engine,corrective_repair,148,Deferred engine work pending parts (148d ago),2940
+V-1027,brakes,inspection,157,brakes inspection — wear within limits (157d ago),1052
+V-1027,engine,parts_replacement,158,Scheduled engine PM completed (158d ago),2900
+V-1028,suspension,oil_analysis,11,suspension fault cleared after service (11d ago),526
+V-1028,suspension,corrective_repair,148,suspension fault cleared after service (148d ago),0
+V-1029,hydraulics,corrective_repair,26,Scheduled hydraulics PM completed (26d ago),3532
+V-1029,hydraulics,corrective_repair,125,hydraulics inspection — wear within limits (125d ago),3136
+V-1029,hydraulics,fault_code,161,hydraulics fault cleared after service (161d ago),2992
+V-1030,cooling,inspection,12,cooling fault cleared after service (12d ago),342
+V-1030,cooling,oil_analysis,62,cooling inspection — wear within limits (62d ago),142
+V-1030,cooling,oil_analysis,89,cooling fault cleared after service (89d ago),34
+V-1031,engine,fault_code,136,Deferred engine work pending parts (136d ago),2270
+V-1031,engine,fault_code,141,engine inspection — wear within limits (141d ago),2250
+V-1032,transmission,parts_replacement,13,transmission inspection — wear within limits (13d ago),3875
+V-1032,transmission,corrective_repair,19,transmission fault cleared after service (19d ago),3851
+V-1032,transmission,oil_analysis,31,Scheduled transmission PM completed (31d ago),3803
+V-1032,transmission,preventive_service,48,Deferred transmission work pending parts (48d ago),3735
+V-1032,transmission,parts_replacement,128,Deferred transmission work pending parts (128d ago),3415
+V-1032,transmission,fault_code,134,Scheduled transmission PM completed (134d ago),3391
+V-1033,brakes,inspection,33,brakes fault cleared after service (33d ago),445
+V-1033,suspension,preventive_service,56,Scheduled suspension PM completed (56d ago),642
+V-1033,brakes,oil_analysis,67,brakes fault cleared after service (67d ago),309
+V-1033,brakes,parts_replacement,70,Scheduled brakes PM completed (70d ago),297
+V-1033,suspension,preventive_service,107,Deferred suspension work pending parts (107d ago),438
+V-1033,suspension,preventive_service,110,Scheduled suspension PM completed (110d ago),426
+V-1033,suspension,parts_replacement,146,suspension inspection — wear within limits (146d ago),282
+V-1034,transmission,preventive_service,63,transmission inspection — wear within limits (63d ago),2583
+V-1034,transmission,oil_analysis,158,transmission inspection — wear within limits (158d ago),2203
+V-1034,transmission,parts_replacement,175,transmission inspection — wear within limits (175d ago),2135
+V-1034,transmission,fault_code,178,Elevated transmission temperature recorded (178d ago),2123
+V-1035,brakes,corrective_repair,16,brakes fault cleared after service (16d ago),3455
+V-1035,brakes,parts_replacement,108,Scheduled brakes PM completed (108d ago),3087
+V-1035,cooling,corrective_repair,122,Scheduled cooling PM completed (122d ago),1859
+V-1035,brakes,corrective_repair,131,Deferred brakes work pending parts (131d ago),2995
+V-1035,cooling,fault_code,179,Elevated cooling temperature recorded (179d ago),1631
+V-1036,electrical,oil_analysis,12,Scheduled electrical PM completed (12d ago),4836
+V-1036,electrical,oil_analysis,46,Elevated electrical temperature recorded (46d ago),4700
+V-1036,suspension,inspection,51,suspension fault cleared after service (51d ago),4143
+V-1036,electrical,preventive_service,61,Deferred electrical work pending parts (61d ago),4640
+V-1036,electrical,inspection,124,electrical fault cleared after service (124d ago),4388
+V-1036,suspension,inspection,138,Scheduled suspension PM completed (138d ago),3795
+V-1036,suspension,parts_replacement,144,Deferred suspension work pending parts (144d ago),3771
+V-1036,suspension,fault_code,145,suspension inspection — wear within limits (145d ago),3767
+V-1036,suspension,preventive_service,163,Scheduled suspension PM completed (163d ago),3695
+V-1037,brakes,oil_analysis,1,Elevated brakes temperature recorded (1d ago),4101
+V-1037,brakes,fault_code,5,Deferred brakes work pending parts (5d ago),4085
+V-1037,engine,inspection,114,Elevated engine temperature recorded (114d ago),14
+V-1037,engine,fault_code,118,Deferred engine work pending parts (118d ago),0
+V-1037,brakes,parts_replacement,150,Deferred brakes work pending parts (150d ago),3505
+V-1037,brakes,parts_replacement,159,brakes fault cleared after service (159d ago),3469
+V-1037,engine,inspection,160,Deferred engine work pending parts (160d ago),0
+V-1037,engine,fault_code,163,Scheduled engine PM completed (163d ago),0
+V-1037,engine,parts_replacement,165,Elevated engine temperature recorded (165d ago),0
+V-1037,brakes,parts_replacement,174,Elevated brakes temperature recorded (174d ago),3409
+V-1037,brakes,parts_replacement,176,Scheduled brakes PM completed (176d ago),3401
+V-1038,electrical,parts_replacement,5,electrical fault cleared after service (5d ago),3073
+V-1038,engine,inspection,18,Deferred engine work pending parts (18d ago),5403
+V-1038,electrical,parts_replacement,37,Deferred electrical work pending parts (37d ago),2945
+V-1038,electrical,inspection,72,Deferred electrical work pending parts (72d ago),2805
+V-1038,electrical,parts_replacement,73,electrical fault cleared after service (73d ago),2801
+V-1038,brakes,inspection,92,Scheduled brakes PM completed (92d ago),0
+V-1038,engine,preventive_service,127,engine inspection — wear within limits (127d ago),4967
+V-1038,electrical,oil_analysis,128,Scheduled electrical PM completed (128d ago),2581
+V-1038,brakes,preventive_service,131,brakes fault cleared after service (131d ago),0
+V-1038,brakes,corrective_repair,140,brakes fault cleared after service (140d ago),0
+V-1038,electrical,inspection,164,Scheduled electrical PM completed (164d ago),2437
+V-1039,engine,fault_code,5,engine fault cleared after service (5d ago),3692
+V-1039,hydraulics,fault_code,6,hydraulics inspection — wear within limits (6d ago),872
+V-1039,engine,inspection,7,Scheduled engine PM completed (7d ago),3684
+V-1039,electrical,parts_replacement,11,electrical inspection — wear within limits (11d ago),3214
+V-1039,electrical,inspection,12,Elevated electrical temperature recorded (12d ago),3210
+V-1039,hydraulics,fault_code,49,Scheduled hydraulics PM completed (49d ago),700
+V-1039,hydraulics,fault_code,49,Deferred hydraulics work pending parts (49d ago),700
+V-1039,electrical,oil_analysis,65,Elevated electrical temperature recorded (65d ago),2998
+V-1039,hydraulics,parts_replacement,101,Elevated hydraulics temperature recorded (101d ago),492
+V-1039,engine,oil_analysis,118,engine fault cleared after service (118d ago),3240
+V-1039,electrical,preventive_service,122,Elevated electrical temperature recorded (122d ago),2770
+V-1039,hydraulics,preventive_service,141,hydraulics fault cleared after service (141d ago),332
+V-1039,engine,parts_replacement,146,engine inspection — wear within limits (146d ago),3128
+V-1039,hydraulics,inspection,175,hydraulics fault cleared after service (175d ago),196
+V-1040,electrical,parts_replacement,27,Deferred electrical work pending parts (27d ago),4137
+V-1040,electrical,preventive_service,87,electrical fault cleared after service (87d ago),3897
+V-1040,electrical,oil_analysis,118,Scheduled electrical PM completed (118d ago),3773
+V-1040,electrical,inspection,174,Deferred electrical work pending parts (174d ago),3549
+V-1041,brakes,corrective_repair,42,brakes inspection — wear within limits (42d ago),480
+V-1041,brakes,preventive_service,50,brakes fault cleared after service (50d ago),448
+V-1041,brakes,preventive_service,77,brakes fault cleared after service (77d ago),340
+V-1041,brakes,inspection,79,Scheduled brakes PM completed (79d ago),332
+V-1041,cooling,fault_code,86,cooling fault cleared after service (86d ago),0
+V-1041,brakes,preventive_service,110,Scheduled brakes PM completed (110d ago),208
+V-1041,cooling,oil_analysis,114,Elevated cooling temperature recorded (114d ago),0
+V-1041,cooling,parts_replacement,134,Scheduled cooling PM completed (134d ago),0
+V-1041,cooling,inspection,141,Elevated cooling temperature recorded (141d ago),0
+V-1041,brakes,inspection,152,Deferred brakes work pending parts (152d ago),40
+V-1041,cooling,parts_replacement,177,Elevated cooling temperature recorded (177d ago),0
+V-1042,suspension,preventive_service,6,Deferred suspension work pending parts (6d ago),3491
+V-1042,suspension,inspection,65,Scheduled suspension PM completed (65d ago),3255
+V-1042,suspension,preventive_service,132,Scheduled suspension PM completed (132d ago),2987
+V-1042,suspension,preventive_service,134,suspension inspection — wear within limits (134d ago),2979
+V-1042,suspension,corrective_repair,163,suspension inspection — wear within limits (163d ago),2863
+V-1043,hydraulics,corrective_repair,25,Elevated hydraulics temperature recorded (25d ago),4218
+V-1043,hydraulics,inspection,35,Elevated hydraulics temperature recorded (35d ago),4178
+V-1043,hydraulics,preventive_service,76,Deferred hydraulics work pending parts (76d ago),4014
+V-1044,cooling,preventive_service,7,Scheduled cooling PM completed (7d ago),1614
+V-1044,cooling,inspection,19,cooling fault cleared after service (19d ago),1566
+V-1044,engine,parts_replacement,22,engine inspection — wear within limits (22d ago),2646
+V-1044,cooling,corrective_repair,95,Elevated cooling temperature recorded (95d ago),1262
+V-1044,engine,inspection,126,Deferred engine work pending parts (126d ago),2230
+V-1044,cooling,parts_replacement,147,cooling inspection — wear within limits (147d ago),1054
+V-1044,engine,parts_replacement,154,Scheduled engine PM completed (154d ago),2118
+V-1044,engine,oil_analysis,166,Scheduled engine PM completed (166d ago),2070
+V-1044,engine,oil_analysis,173,Elevated engine temperature recorded (173d ago),2042
+V-1045,electrical,oil_analysis,55,electrical inspection — wear within limits (55d ago),4207
+V-1045,electrical,parts_replacement,101,electrical fault cleared after service (101d ago),4023
+V-1045,electrical,preventive_service,108,electrical inspection — wear within limits (108d ago),3995
+V-1045,electrical,inspection,116,Elevated electrical temperature recorded (116d ago),3963
+V-1045,electrical,corrective_repair,156,electrical inspection — wear within limits (156d ago),3803
+V-1046,suspension,corrective_repair,36,Scheduled suspension PM completed (36d ago),1224
+V-1046,suspension,inspection,41,Deferred suspension work pending parts (41d ago),1204
+V-1046,suspension,preventive_service,61,Elevated suspension temperature recorded (61d ago),1124
+V-1046,suspension,parts_replacement,64,suspension inspection — wear within limits (64d ago),1112
+V-1046,electrical,fault_code,92,electrical fault cleared after service (92d ago),4402
+V-1046,hydraulics,parts_replacement,96,Deferred hydraulics work pending parts (96d ago),0
+V-1046,electrical,parts_replacement,121,Scheduled electrical PM completed (121d ago),4286
+V-1046,electrical,parts_replacement,146,electrical fault cleared after service (146d ago),4186
+V-1046,electrical,parts_replacement,146,electrical inspection — wear within limits (146d ago),4186
+V-1046,hydraulics,preventive_service,151,Elevated hydraulics temperature recorded (151d ago),0
+V-1046,hydraulics,corrective_repair,153,Deferred hydraulics work pending parts (153d ago),0
+V-1046,suspension,inspection,171,Deferred suspension work pending parts (171d ago),684
+V-1047,transmission,corrective_repair,10,transmission fault cleared after service (10d ago),4845
+V-1047,transmission,corrective_repair,83,Scheduled transmission PM completed (83d ago),4553
+V-1047,transmission,corrective_repair,128,transmission fault cleared after service (128d ago),4373
+V-1047,transmission,parts_replacement,153,transmission fault cleared after service (153d ago),4273
+V-1047,transmission,preventive_service,166,Deferred transmission work pending parts (166d ago),4221
+V-1047,transmission,oil_analysis,179,transmission fault cleared after service (179d ago),4169
+V-1048,transmission,inspection,14,transmission inspection — wear within limits (14d ago),2717
+V-1048,transmission,inspection,26,Scheduled transmission PM completed (26d ago),2669
+V-1048,transmission,fault_code,34,Elevated transmission temperature recorded (34d ago),2637
+V-1048,cooling,fault_code,36,cooling inspection — wear within limits (36d ago),677
+V-1048,transmission,corrective_repair,47,Elevated transmission temperature recorded (47d ago),2585
+V-1048,transmission,oil_analysis,71,transmission fault cleared after service (71d ago),2489
+V-1048,transmission,corrective_repair,76,transmission inspection — wear within limits (76d ago),2469
+V-1048,cooling,corrective_repair,88,Scheduled cooling PM completed (88d ago),469
+V-1048,cooling,parts_replacement,115,Scheduled cooling PM completed (115d ago),361
+V-1048,cooling,inspection,116,Deferred cooling work pending parts (116d ago),357
+V-1048,cooling,parts_replacement,172,Scheduled cooling PM completed (172d ago),133
+V-1049,electrical,inspection,14,Deferred electrical work pending parts (14d ago),4951
+V-1049,electrical,inspection,23,Scheduled electrical PM completed (23d ago),4915
+V-1049,brakes,corrective_repair,34,Elevated brakes temperature recorded (34d ago),5142
+V-1049,cooling,inspection,45,cooling inspection — wear within limits (45d ago),1647
+V-1049,electrical,corrective_repair,50,Scheduled electrical PM completed (50d ago),4807
+V-1049,cooling,inspection,58,Elevated cooling temperature recorded (58d ago),1595
+V-1049,cooling,corrective_repair,79,cooling fault cleared after service (79d ago),1511
+V-1049,electrical,fault_code,80,electrical fault cleared after service (80d ago),4687
+V-1049,brakes,oil_analysis,97,Scheduled brakes PM completed (97d ago),4890
+V-1049,brakes,corrective_repair,124,brakes inspection — wear within limits (124d ago),4782
+V-1049,cooling,oil_analysis,143,Elevated cooling temperature recorded (143d ago),1255
+V-1049,cooling,preventive_service,166,cooling fault cleared after service (166d ago),1163
+V-1049,electrical,preventive_service,170,Scheduled electrical PM completed (170d ago),4327
+V-1050,brakes,preventive_service,4,brakes fault cleared after service (4d ago),616
+V-1050,brakes,fault_code,30,Deferred brakes work pending parts (30d ago),512
+V-1050,hydraulics,corrective_repair,39,hydraulics fault cleared after service (39d ago),5315
+V-1050,brakes,corrective_repair,40,brakes inspection — wear within limits (40d ago),472
+V-1050,hydraulics,oil_analysis,89,Elevated hydraulics temperature recorded (89d ago),5115
+V-1050,hydraulics,oil_analysis,96,hydraulics inspection — wear within limits (96d ago),5087
+V-1050,brakes,inspection,110,brakes fault cleared after service (110d ago),192
+V-1050,hydraulics,corrective_repair,114,Elevated hydraulics temperature recorded (114d ago),5015
+V-1050,hydraulics,parts_replacement,130,Scheduled hydraulics PM completed (130d ago),4951
+V-1050,brakes,oil_analysis,133,Scheduled brakes PM completed (133d ago),100
+V-1050,brakes,oil_analysis,170,Scheduled brakes PM completed (170d ago),0
+V-1051,engine,fault_code,1,Elevated engine temperature recorded (1d ago),683
+V-1051,engine,preventive_service,31,Scheduled engine PM completed (31d ago),563
+V-1051,transmission,preventive_service,34,Deferred transmission work pending parts (34d ago),299
+V-1051,transmission,inspection,66,Deferred transmission work pending parts (66d ago),171
+V-1051,hydraulics,preventive_service,74,Scheduled hydraulics PM completed (74d ago),112
+V-1051,hydraulics,fault_code,111,Deferred hydraulics work pending parts (111d ago),0
+V-1051,engine,inspection,142,engine inspection — wear within limits (142d ago),119
+V-1051,engine,fault_code,149,Scheduled engine PM completed (149d ago),91
+V-1052,electrical,parts_replacement,6,electrical fault cleared after service (6d ago),5098
+V-1052,electrical,preventive_service,11,electrical inspection — wear within limits (11d ago),5078
+V-1052,electrical,corrective_repair,54,electrical inspection — wear within limits (54d ago),4906
+V-1052,suspension,corrective_repair,82,suspension fault cleared after service (82d ago),1163
+V-1052,electrical,preventive_service,95,Deferred electrical work pending parts (95d ago),4742
+V-1052,electrical,preventive_service,104,electrical inspection — wear within limits (104d ago),4706
+V-1052,suspension,oil_analysis,110,Deferred suspension work pending parts (110d ago),1051
+V-1052,suspension,corrective_repair,114,suspension fault cleared after service (114d ago),1035
+V-1052,suspension,inspection,123,Deferred suspension work pending parts (123d ago),999
+V-1052,electrical,fault_code,141,electrical fault cleared after service (141d ago),4558
+V-1053,hydraulics,inspection,3,Scheduled hydraulics PM completed (3d ago),118
+V-1053,hydraulics,corrective_repair,13,hydraulics fault cleared after service (13d ago),78
+V-1053,hydraulics,oil_analysis,13,hydraulics inspection — wear within limits (13d ago),78
+V-1053,hydraulics,inspection,61,Elevated hydraulics temperature recorded (61d ago),0
+V-1053,hydraulics,inspection,125,hydraulics fault cleared after service (125d ago),0
+V-1054,suspension,inspection,42,Scheduled suspension PM completed (42d ago),4515
+V-1054,suspension,parts_replacement,84,Elevated suspension temperature recorded (84d ago),4347
+V-1054,suspension,fault_code,109,Scheduled suspension PM completed (109d ago),4247
+V-1054,suspension,parts_replacement,154,Deferred suspension work pending parts (154d ago),4067
+V-1054,suspension,inspection,157,suspension inspection — wear within limits (157d ago),4055
+V-1054,suspension,preventive_service,169,Scheduled suspension PM completed (169d ago),4007
+V-1055,transmission,preventive_service,31,Deferred transmission work pending parts (31d ago),4935
+V-1055,transmission,inspection,124,Elevated transmission temperature recorded (124d ago),4563
+V-1055,transmission,inspection,127,Elevated transmission temperature recorded (127d ago),4551
+V-1055,transmission,parts_replacement,167,Deferred transmission work pending parts (167d ago),4391
+V-1056,suspension,inspection,4,suspension fault cleared after service (4d ago),1236
+V-1056,suspension,oil_analysis,5,Deferred suspension work pending parts (5d ago),1232
+V-1056,engine,corrective_repair,12,engine fault cleared after service (12d ago),928
+V-1056,engine,oil_analysis,17,engine inspection — wear within limits (17d ago),908
+V-1056,engine,corrective_repair,31,engine inspection — wear within limits (31d ago),852
+V-1056,suspension,oil_analysis,76,suspension fault cleared after service (76d ago),948
+V-1056,suspension,parts_replacement,101,Scheduled suspension PM completed (101d ago),848
+V-1056,engine,oil_analysis,121,Elevated engine temperature recorded (121d ago),492
+V-1056,suspension,inspection,158,Scheduled suspension PM completed (158d ago),620
+V-1056,suspension,oil_analysis,177,Scheduled suspension PM completed (177d ago),544
+V-1057,engine,inspection,34,Elevated engine temperature recorded (34d ago),722
+V-1057,engine,oil_analysis,34,Scheduled engine PM completed (34d ago),722
+V-1057,engine,fault_code,100,engine inspection — wear within limits (100d ago),458
+V-1057,engine,fault_code,139,Elevated engine temperature recorded (139d ago),302
+V-1057,engine,fault_code,140,engine inspection — wear within limits (140d ago),298
+V-1057,engine,inspection,173,Deferred engine work pending parts (173d ago),166
+V-1058,cooling,parts_replacement,11,Scheduled cooling PM completed (11d ago),723
+V-1058,suspension,corrective_repair,24,suspension inspection — wear within limits (24d ago),3206
+V-1058,cooling,preventive_service,46,cooling fault cleared after service (46d ago),583
+V-1058,cooling,inspection,125,cooling fault cleared after service (125d ago),267
+V-1058,suspension,preventive_service,165,suspension inspection — wear within limits (165d ago),2642
+V-1058,cooling,inspection,168,Deferred cooling work pending parts (168d ago),95
+V-1059,cooling,corrective_repair,5,cooling fault cleared after service (5d ago),4881
+V-1059,suspension,preventive_service,43,suspension fault cleared after service (43d ago),2908
+V-1059,transmission,preventive_service,79,Elevated transmission temperature recorded (79d ago),2036
+V-1059,cooling,preventive_service,83,cooling fault cleared after service (83d ago),4569
+V-1059,transmission,inspection,87,Elevated transmission temperature recorded (87d ago),2004
+V-1059,suspension,preventive_service,101,Scheduled suspension PM completed (101d ago),2676
+V-1059,transmission,preventive_service,104,Elevated transmission temperature recorded (104d ago),1936
+V-1059,suspension,corrective_repair,140,suspension inspection — wear within limits (140d ago),2520
+V-1059,transmission,preventive_service,168,Scheduled transmission PM completed (168d ago),1680
+V-1059,suspension,preventive_service,178,suspension inspection — wear within limits (178d ago),2368
+V-1060,cooling,preventive_service,6,Elevated cooling temperature recorded (6d ago),2602
+V-1060,hydraulics,oil_analysis,7,hydraulics inspection — wear within limits (7d ago),4295
+V-1060,cooling,preventive_service,18,Scheduled cooling PM completed (18d ago),2554
+V-1060,suspension,corrective_repair,43,Elevated suspension temperature recorded (43d ago),1015
+V-1060,cooling,inspection,45,Deferred cooling work pending parts (45d ago),2446
+V-1060,cooling,fault_code,57,cooling fault cleared after service (57d ago),2398
+V-1060,cooling,corrective_repair,80,cooling fault cleared after service (80d ago),2306
+V-1060,suspension,oil_analysis,113,Scheduled suspension PM completed (113d ago),735
+V-1060,cooling,fault_code,130,Deferred cooling work pending parts (130d ago),2106
+V-1060,hydraulics,inspection,132,Deferred hydraulics work pending parts (132d ago),3795
+V-1060,hydraulics,preventive_service,148,hydraulics inspection — wear within limits (148d ago),3731
+V-1060,hydraulics,inspection,160,Deferred hydraulics work pending parts (160d ago),3683
+V-1060,suspension,fault_code,162,Scheduled suspension PM completed (162d ago),539
+V-1060,hydraulics,inspection,179,hydraulics fault cleared after service (179d ago),3607
+V-1061,brakes,inspection,11,brakes fault cleared after service (11d ago),2080
+V-1061,brakes,oil_analysis,14,brakes fault cleared after service (14d ago),2068
+V-1061,suspension,inspection,47,suspension inspection — wear within limits (47d ago),3191
+V-1061,suspension,corrective_repair,63,Deferred suspension work pending parts (63d ago),3127
+V-1061,brakes,preventive_service,78,Scheduled brakes PM completed (78d ago),1812
+V-1061,brakes,preventive_service,118,Scheduled brakes PM completed (118d ago),1652
+V-1061,suspension,inspection,132,suspension inspection — wear within limits (132d ago),2851
+V-1061,suspension,preventive_service,145,suspension fault cleared after service (145d ago),2799
+V-1062,cooling,corrective_repair,24,cooling fault cleared after service (24d ago),1581
+V-1062,transmission,inspection,52,Elevated transmission temperature recorded (52d ago),4647
+V-1062,cooling,preventive_service,73,Scheduled cooling PM completed (73d ago),1385
+V-1062,transmission,corrective_repair,87,transmission fault cleared after service (87d ago),4507
+V-1062,engine,oil_analysis,88,engine fault cleared after service (88d ago),0
+V-1062,engine,preventive_service,91,engine inspection — wear within limits (91d ago),0
+V-1062,transmission,preventive_service,136,Scheduled transmission PM completed (136d ago),4311
+V-1062,transmission,inspection,152,Scheduled transmission PM completed (152d ago),4247
+V-1062,transmission,fault_code,153,Deferred transmission work pending parts (153d ago),4243
+V-1063,engine,parts_replacement,41,Deferred engine work pending parts (41d ago),1288
+V-1063,brakes,oil_analysis,71,Deferred brakes work pending parts (71d ago),1446
+V-1063,engine,corrective_repair,102,Scheduled engine PM completed (102d ago),1044
+V-1063,engine,corrective_repair,107,Deferred engine work pending parts (107d ago),1024
+V-1063,brakes,inspection,108,Elevated brakes temperature recorded (108d ago),1298
+V-1063,engine,preventive_service,134,engine inspection — wear within limits (134d ago),916
+V-1063,engine,parts_replacement,163,Scheduled engine PM completed (163d ago),800
+V-1064,brakes,inspection,42,brakes inspection — wear within limits (42d ago),2789
+V-1064,cooling,oil_analysis,60,cooling fault cleared after service (60d ago),960
+V-1064,brakes,inspection,87,brakes inspection — wear within limits (87d ago),2609
+V-1064,engine,corrective_repair,98,Scheduled engine PM completed (98d ago),660
+V-1064,engine,inspection,139,Deferred engine work pending parts (139d ago),496
+V-1064,cooling,preventive_service,154,Elevated cooling temperature recorded (154d ago),584
+V-1064,cooling,corrective_repair,161,cooling fault cleared after service (161d ago),556
+V-1064,brakes,inspection,165,Deferred brakes work pending parts (165d ago),2297
+V-1065,electrical,corrective_repair,8,Elevated electrical temperature recorded (8d ago),2707
+V-1065,electrical,oil_analysis,28,Elevated electrical temperature recorded (28d ago),2627
+V-1065,electrical,preventive_service,64,electrical fault cleared after service (64d ago),2483
+V-1065,electrical,parts_replacement,85,electrical inspection — wear within limits (85d ago),2399
+V-1065,electrical,corrective_repair,89,Deferred electrical work pending parts (89d ago),2383
+V-1066,electrical,fault_code,109,Scheduled electrical PM completed (109d ago),4810
+V-1066,electrical,corrective_repair,131,electrical inspection — wear within limits (131d ago),4722
+V-1067,hydraulics,fault_code,66,Elevated hydraulics temperature recorded (66d ago),1558
+V-1067,hydraulics,oil_analysis,98,hydraulics inspection — wear within limits (98d ago),1430
+V-1068,cooling,parts_replacement,8,cooling fault cleared after service (8d ago),4067
+V-1068,cooling,parts_replacement,27,cooling fault cleared after service (27d ago),3991
+V-1068,cooling,preventive_service,31,Scheduled cooling PM completed (31d ago),3975
+V-1068,cooling,preventive_service,63,cooling inspection — wear within limits (63d ago),3847
+V-1068,cooling,fault_code,141,Elevated cooling temperature recorded (141d ago),3535
+V-1069,cooling,parts_replacement,49,cooling inspection — wear within limits (49d ago),3259
+V-1069,cooling,inspection,94,cooling inspection — wear within limits (94d ago),3079
+V-1070,hydraulics,oil_analysis,5,Deferred hydraulics work pending parts (5d ago),1789
+V-1070,hydraulics,preventive_service,22,hydraulics fault cleared after service (22d ago),1721
+V-1070,electrical,parts_replacement,26,Deferred electrical work pending parts (26d ago),312
+V-1070,hydraulics,inspection,41,Elevated hydraulics temperature recorded (41d ago),1645
+V-1070,engine,parts_replacement,53,Deferred engine work pending parts (53d ago),1725
+V-1070,hydraulics,parts_replacement,77,Scheduled hydraulics PM completed (77d ago),1501
+V-1070,electrical,parts_replacement,97,Deferred electrical work pending parts (97d ago),28
+V-1070,electrical,inspection,106,Elevated electrical temperature recorded (106d ago),0
+V-1070,hydraulics,oil_analysis,128,Deferred hydraulics work pending parts (128d ago),1297
+V-1070,electrical,oil_analysis,147,electrical inspection — wear within limits (147d ago),0
+V-1070,electrical,preventive_service,155,Elevated electrical temperature recorded (155d ago),0
+V-1070,hydraulics,fault_code,159,Deferred hydraulics work pending parts (159d ago),1173
+V-1070,engine,oil_analysis,165,Deferred engine work pending parts (165d ago),1277
+V-1071,transmission,fault_code,3,Scheduled transmission PM completed (3d ago),2453
+V-1071,transmission,oil_analysis,3,transmission fault cleared after service (3d ago),2453
+V-1071,hydraulics,preventive_service,41,hydraulics inspection — wear within limits (41d ago),3817
+V-1071,electrical,parts_replacement,58,electrical inspection — wear within limits (58d ago),3425
+V-1071,transmission,preventive_service,84,transmission fault cleared after service (84d ago),2129
+V-1071,transmission,fault_code,124,Deferred transmission work pending parts (124d ago),1969
+V-1071,electrical,inspection,165,Elevated electrical temperature recorded (165d ago),2997
+V-1071,transmission,fault_code,165,Elevated transmission temperature recorded (165d ago),1805
+V-1071,hydraulics,fault_code,176,Deferred hydraulics work pending parts (176d ago),3277
+V-1072,transmission,parts_replacement,8,transmission inspection — wear within limits (8d ago),1430
+V-1072,transmission,corrective_repair,12,transmission inspection — wear within limits (12d ago),1414
+V-1072,suspension,preventive_service,19,suspension inspection — wear within limits (19d ago),3661
+V-1072,suspension,parts_replacement,34,Deferred suspension work pending parts (34d ago),3601
+V-1072,suspension,preventive_service,44,Elevated suspension temperature recorded (44d ago),3561
+V-1072,hydraulics,preventive_service,74,hydraulics inspection — wear within limits (74d ago),4448
+V-1072,transmission,preventive_service,106,Elevated transmission temperature recorded (106d ago),1038
+V-1072,transmission,oil_analysis,135,Scheduled transmission PM completed (135d ago),922
+V-1072,suspension,inspection,146,Scheduled suspension PM completed (146d ago),3153
+V-1072,transmission,inspection,163,Scheduled transmission PM completed (163d ago),810
+V-1072,suspension,parts_replacement,168,Elevated suspension temperature recorded (168d ago),3065
+V-1072,hydraulics,inspection,170,Elevated hydraulics temperature recorded (170d ago),4064
+V-1072,suspension,corrective_repair,175,suspension inspection — wear within limits (175d ago),3037
+V-1073,brakes,fault_code,9,Deferred brakes work pending parts (9d ago),3351
+V-1073,suspension,parts_replacement,34,Deferred suspension work pending parts (34d ago),3370
+V-1073,suspension,preventive_service,44,Elevated suspension temperature recorded (44d ago),3330
+V-1073,suspension,parts_replacement,67,suspension fault cleared after service (67d ago),3238
+V-1073,brakes,oil_analysis,70,brakes inspection — wear within limits (70d ago),3107
+V-1073,suspension,preventive_service,76,Scheduled suspension PM completed (76d ago),3202
+V-1073,brakes,preventive_service,90,brakes inspection — wear within limits (90d ago),3027
+V-1073,suspension,inspection,114,suspension fault cleared after service (114d ago),3050
+V-1073,suspension,preventive_service,145,suspension fault cleared after service (145d ago),2926
+V-1073,brakes,fault_code,166,Scheduled brakes PM completed (166d ago),2723
+V-1074,cooling,corrective_repair,56,Deferred cooling work pending parts (56d ago),4000
+V-1074,cooling,oil_analysis,57,Deferred cooling work pending parts (57d ago),3996
+V-1074,cooling,inspection,91,Scheduled cooling PM completed (91d ago),3860
+V-1074,cooling,preventive_service,106,cooling inspection — wear within limits (106d ago),3800
+V-1074,cooling,oil_analysis,170,Elevated cooling temperature recorded (170d ago),3544
+V-1075,transmission,fault_code,13,Deferred transmission work pending parts (13d ago),3203
+V-1075,transmission,inspection,15,transmission inspection — wear within limits (15d ago),3195
+V-1075,transmission,preventive_service,16,transmission inspection — wear within limits (16d ago),3191
+V-1075,transmission,parts_replacement,37,Deferred transmission work pending parts (37d ago),3107
+V-1076,brakes,inspection,1,Scheduled brakes PM completed (1d ago),4398
+V-1076,brakes,oil_analysis,16,Deferred brakes work pending parts (16d ago),4338
+V-1076,brakes,inspection,33,Elevated brakes temperature recorded (33d ago),4270
+V-1076,brakes,corrective_repair,40,brakes inspection — wear within limits (40d ago),4242
+V-1076,brakes,inspection,132,Scheduled brakes PM completed (132d ago),3874
+V-1076,brakes,fault_code,147,Deferred brakes work pending parts (147d ago),3814
+V-1077,transmission,oil_analysis,12,Scheduled transmission PM completed (12d ago),866
+V-1077,transmission,oil_analysis,133,Deferred transmission work pending parts (133d ago),382
+V-1077,transmission,preventive_service,140,transmission inspection — wear within limits (140d ago),354
+V-1078,transmission,fault_code,6,Elevated transmission temperature recorded (6d ago),4851
+V-1078,suspension,fault_code,40,suspension inspection — wear within limits (40d ago),2634
+V-1078,transmission,parts_replacement,64,Deferred transmission work pending parts (64d ago),4619
+V-1078,suspension,corrective_repair,64,suspension inspection — wear within limits (64d ago),2538
+V-1078,transmission,oil_analysis,75,transmission inspection — wear within limits (75d ago),4575
+V-1078,transmission,inspection,76,Elevated transmission temperature recorded (76d ago),4571
+V-1078,suspension,oil_analysis,107,Deferred suspension work pending parts (107d ago),2366
+V-1078,transmission,parts_replacement,140,transmission fault cleared after service (140d ago),4315
+V-1078,suspension,inspection,155,Deferred suspension work pending parts (155d ago),2174
+V-1078,transmission,oil_analysis,176,transmission inspection — wear within limits (176d ago),4171
+V-1078,suspension,oil_analysis,178,Deferred suspension work pending parts (178d ago),2082
+V-1079,hydraulics,fault_code,32,Scheduled hydraulics PM completed (32d ago),1677
+V-1079,hydraulics,corrective_repair,51,hydraulics fault cleared after service (51d ago),1601
+V-1079,hydraulics,inspection,65,Scheduled hydraulics PM completed (65d ago),1545
+V-1079,hydraulics,fault_code,88,Scheduled hydraulics PM completed (88d ago),1453
+V-1079,hydraulics,preventive_service,145,hydraulics inspection — wear within limits (145d ago),1225
+V-1080,hydraulics,oil_analysis,17,hydraulics inspection — wear within limits (17d ago),4210
+V-1080,cooling,oil_analysis,32,cooling inspection — wear within limits (32d ago),1694
+V-1080,cooling,parts_replacement,33,cooling fault cleared after service (33d ago),1690
+V-1080,hydraulics,inspection,62,hydraulics fault cleared after service (62d ago),4030
+V-1080,hydraulics,inspection,72,hydraulics inspection — wear within limits (72d ago),3990
+V-1080,suspension,oil_analysis,75,Scheduled suspension PM completed (75d ago),300
+V-1080,suspension,parts_replacement,81,Elevated suspension temperature recorded (81d ago),276
+V-1080,suspension,corrective_repair,85,Deferred suspension work pending parts (85d ago),260
+V-1080,cooling,oil_analysis,92,cooling inspection — wear within limits (92d ago),1454
+V-1080,suspension,preventive_service,119,Scheduled suspension PM completed (119d ago),124
+V-1080,suspension,oil_analysis,121,suspension fault cleared after service (121d ago),116
+V-1080,cooling,inspection,148,Elevated cooling temperature recorded (148d ago),1230
+V-1080,cooling,inspection,152,Scheduled cooling PM completed (152d ago),1214
+V-1080,suspension,parts_replacement,167,Elevated suspension temperature recorded (167d ago),0
+V-1080,hydraulics,corrective_repair,175,hydraulics inspection — wear within limits (175d ago),3578
+V-1081,cooling,fault_code,39,cooling fault cleared after service (39d ago),2845
+V-1081,cooling,parts_replacement,95,cooling fault cleared after service (95d ago),2621
+V-1082,electrical,preventive_service,8,Elevated electrical temperature recorded (8d ago),4114
+V-1082,electrical,corrective_repair,65,Scheduled electrical PM completed (65d ago),3886
+V-1082,electrical,inspection,100,Scheduled electrical PM completed (100d ago),3746
+V-1082,electrical,fault_code,109,electrical fault cleared after service (109d ago),3710
+V-1082,electrical,parts_replacement,118,electrical fault cleared after service (118d ago),3674
+V-1082,electrical,parts_replacement,148,Scheduled electrical PM completed (148d ago),3554
+V-1083,transmission,inspection,45,transmission fault cleared after service (45d ago),4642
+V-1083,engine,oil_analysis,70,Deferred engine work pending parts (70d ago),3782
+V-1083,transmission,preventive_service,78,Elevated transmission temperature recorded (78d ago),4510
+V-1083,engine,fault_code,88,Elevated engine temperature recorded (88d ago),3710
+V-1083,transmission,preventive_service,90,Scheduled transmission PM completed (90d ago),4462
+V-1083,transmission,oil_analysis,117,Scheduled transmission PM completed (117d ago),4354
+V-1083,engine,preventive_service,131,Deferred engine work pending parts (131d ago),3538
+V-1083,brakes,preventive_service,137,Deferred brakes work pending parts (137d ago),3993
+V-1083,brakes,fault_code,139,brakes fault cleared after service (139d ago),3985
+V-1083,transmission,parts_replacement,152,Elevated transmission temperature recorded (152d ago),4214
+V-1083,brakes,preventive_service,158,Deferred brakes work pending parts (158d ago),3909
+V-1084,brakes,parts_replacement,16,brakes inspection — wear within limits (16d ago),3518
+V-1084,hydraulics,fault_code,25,Scheduled hydraulics PM completed (25d ago),2249
+V-1084,brakes,preventive_service,27,Elevated brakes temperature recorded (27d ago),3474
+V-1084,brakes,oil_analysis,48,Scheduled brakes PM completed (48d ago),3390
+V-1084,electrical,corrective_repair,67,Scheduled electrical PM completed (67d ago),1517
+V-1084,electrical,inspection,77,electrical inspection — wear within limits (77d ago),1477
+V-1084,hydraulics,fault_code,98,Elevated hydraulics temperature recorded (98d ago),1957
+V-1084,brakes,corrective_repair,120,brakes fault cleared after service (120d ago),3102
+V-1084,brakes,fault_code,134,Deferred brakes work pending parts (134d ago),3046
+V-1084,brakes,fault_code,149,Deferred brakes work pending parts (149d ago),2986
+V-1084,hydraulics,parts_replacement,166,Scheduled hydraulics PM completed (166d ago),1685
+V-1084,hydraulics,parts_replacement,176,Deferred hydraulics work pending parts (176d ago),1645
+V-1085,transmission,fault_code,3,Deferred transmission work pending parts (3d ago),1127
+V-1085,transmission,inspection,14,transmission inspection — wear within limits (14d ago),1083
+V-1085,electrical,parts_replacement,18,electrical fault cleared after service (18d ago),738
+V-1085,transmission,inspection,49,transmission fault cleared after service (49d ago),943
+V-1085,electrical,preventive_service,87,Elevated electrical temperature recorded (87d ago),462
+V-1085,transmission,inspection,119,transmission inspection — wear within limits (119d ago),663
+V-1085,electrical,oil_analysis,121,Deferred electrical work pending parts (121d ago),326
+V-1085,electrical,parts_replacement,135,electrical fault cleared after service (135d ago),270
+V-1085,electrical,parts_replacement,139,Elevated electrical temperature recorded (139d ago),254
+V-1085,transmission,preventive_service,140,transmission fault cleared after service (140d ago),579
+V-1086,electrical,fault_code,33,Deferred electrical work pending parts (33d ago),4986
+V-1086,transmission,oil_analysis,36,Deferred transmission work pending parts (36d ago),5077
+V-1086,electrical,corrective_repair,69,Deferred electrical work pending parts (69d ago),4842
+V-1086,transmission,oil_analysis,83,Elevated transmission temperature recorded (83d ago),4889
+V-1086,brakes,corrective_repair,128,Elevated brakes temperature recorded (128d ago),3656
+V-1086,transmission,fault_code,128,Scheduled transmission PM completed (128d ago),4709
+V-1086,brakes,parts_replacement,131,Elevated brakes temperature recorded (131d ago),3644
+V-1086,transmission,fault_code,137,Deferred transmission work pending parts (137d ago),4673
+V-1086,transmission,oil_analysis,149,Deferred transmission work pending parts (149d ago),4625
+V-1086,electrical,parts_replacement,152,electrical fault cleared after service (152d ago),4510
+V-1086,transmission,fault_code,159,Elevated transmission temperature recorded (159d ago),4585
+V-1086,electrical,corrective_repair,160,electrical fault cleared after service (160d ago),4478
+V-1086,electrical,inspection,162,Scheduled electrical PM completed (162d ago),4470
+V-1087,suspension,oil_analysis,27,Elevated suspension temperature recorded (27d ago),3050
+V-1087,suspension,inspection,28,Elevated suspension temperature recorded (28d ago),3046
+V-1087,transmission,preventive_service,31,Scheduled transmission PM completed (31d ago),2294
+V-1087,transmission,oil_analysis,51,transmission inspection — wear within limits (51d ago),2214
+V-1087,hydraulics,parts_replacement,53,hydraulics inspection — wear within limits (53d ago),1608
+V-1087,hydraulics,inspection,81,hydraulics inspection — wear within limits (81d ago),1496
+V-1087,transmission,preventive_service,92,Deferred transmission work pending parts (92d ago),2050
+V-1087,transmission,fault_code,109,transmission fault cleared after service (109d ago),1982
+V-1087,hydraulics,parts_replacement,122,Elevated hydraulics temperature recorded (122d ago),1332
+V-1087,suspension,fault_code,124,Elevated suspension temperature recorded (124d ago),2662
+V-1087,suspension,fault_code,125,suspension inspection — wear within limits (125d ago),2658
+V-1087,transmission,corrective_repair,131,Scheduled transmission PM completed (131d ago),1894
+V-1087,hydraulics,inspection,141,hydraulics fault cleared after service (141d ago),1256
+V-1087,suspension,oil_analysis,147,suspension fault cleared after service (147d ago),2570
+V-1087,suspension,oil_analysis,165,suspension fault cleared after service (165d ago),2498
+V-1087,hydraulics,inspection,169,Scheduled hydraulics PM completed (169d ago),1144
+V-1088,brakes,oil_analysis,7,Scheduled brakes PM completed (7d ago),3971
+V-1088,engine,preventive_service,27,Scheduled engine PM completed (27d ago),4999
+V-1088,brakes,corrective_repair,52,Deferred brakes work pending parts (52d ago),3791
+V-1088,brakes,parts_replacement,59,brakes fault cleared after service (59d ago),3763
+V-1088,engine,parts_replacement,89,Deferred engine work pending parts (89d ago),4751
+V-1088,brakes,corrective_repair,121,Elevated brakes temperature recorded (121d ago),3515
+V-1088,brakes,oil_analysis,126,Deferred brakes work pending parts (126d ago),3495
+V-1088,brakes,corrective_repair,138,brakes inspection — wear within limits (138d ago),3447
+V-1089,cooling,oil_analysis,7,cooling inspection — wear within limits (7d ago),922
+V-1089,brakes,fault_code,20,Scheduled brakes PM completed (20d ago),29
+V-1089,brakes,preventive_service,32,Deferred brakes work pending parts (32d ago),0
+V-1089,cooling,corrective_repair,58,Scheduled cooling PM completed (58d ago),718
+V-1089,engine,corrective_repair,75,Elevated engine temperature recorded (75d ago),3467
+V-1089,engine,oil_analysis,92,Scheduled engine PM completed (92d ago),3399
+V-1089,engine,corrective_repair,107,engine fault cleared after service (107d ago),3339
+V-1089,engine,corrective_repair,113,Deferred engine work pending parts (113d ago),3315
+V-1089,engine,corrective_repair,135,engine inspection — wear within limits (135d ago),3227
+V-1089,engine,oil_analysis,161,Deferred engine work pending parts (161d ago),3123
+V-1090,suspension,corrective_repair,4,suspension fault cleared after service (4d ago),1710
+V-1090,suspension,fault_code,6,Deferred suspension work pending parts (6d ago),1702
+V-1090,suspension,parts_replacement,65,Elevated suspension temperature recorded (65d ago),1466
+V-1090,engine,oil_analysis,70,Elevated engine temperature recorded (70d ago),1829
+V-1090,cooling,corrective_repair,80,Scheduled cooling PM completed (80d ago),2063
+V-1090,engine,parts_replacement,100,Elevated engine temperature recorded (100d ago),1709
+V-1090,cooling,corrective_repair,111,cooling inspection — wear within limits (111d ago),1939
+V-1090,cooling,inspection,157,Deferred cooling work pending parts (157d ago),1755
+V-1090,engine,inspection,167,engine inspection — wear within limits (167d ago),1441
+V-1090,engine,corrective_repair,177,Scheduled engine PM completed (177d ago),1401
+V-1091,suspension,oil_analysis,4,suspension fault cleared after service (4d ago),1929
+V-1091,suspension,fault_code,19,suspension inspection — wear within limits (19d ago),1869
+V-1091,suspension,inspection,42,Elevated suspension temperature recorded (42d ago),1777
+V-1091,engine,oil_analysis,58,engine inspection — wear within limits (58d ago),3201
+V-1091,engine,preventive_service,78,Deferred engine work pending parts (78d ago),3121
+V-1091,engine,fault_code,85,Scheduled engine PM completed (85d ago),3093
+V-1091,engine,corrective_repair,117,Elevated engine temperature recorded (117d ago),2965
+V-1091,suspension,preventive_service,130,Scheduled suspension PM completed (130d ago),1425
+V-1091,suspension,fault_code,143,Deferred suspension work pending parts (143d ago),1373
+V-1092,hydraulics,parts_replacement,3,hydraulics fault cleared after service (3d ago),286
+V-1092,electrical,preventive_service,77,Scheduled electrical PM completed (77d ago),3209
+V-1092,electrical,parts_replacement,98,electrical inspection — wear within limits (98d ago),3125
+V-1092,electrical,oil_analysis,117,Scheduled electrical PM completed (117d ago),3049
+V-1092,electrical,parts_replacement,118,electrical fault cleared after service (118d ago),3045
+V-1092,electrical,corrective_repair,134,electrical inspection — wear within limits (134d ago),2981
+V-1092,hydraulics,inspection,137,Deferred hydraulics work pending parts (137d ago),0
+V-1092,hydraulics,parts_replacement,147,Scheduled hydraulics PM completed (147d ago),0
+V-1092,electrical,preventive_service,167,electrical fault cleared after service (167d ago),2849
+V-1093,transmission,preventive_service,7,Deferred transmission work pending parts (7d ago),5302
+V-1093,hydraulics,oil_analysis,25,Deferred hydraulics work pending parts (25d ago),824
+V-1093,hydraulics,parts_replacement,37,Deferred hydraulics work pending parts (37d ago),776
+V-1093,transmission,inspection,47,Deferred transmission work pending parts (47d ago),5142
+V-1093,transmission,inspection,62,Deferred transmission work pending parts (62d ago),5082
+V-1093,engine,fault_code,71,Scheduled engine PM completed (71d ago),3632
+V-1093,engine,oil_analysis,81,engine inspection — wear within limits (81d ago),3592
+V-1093,hydraulics,fault_code,112,Deferred hydraulics work pending parts (112d ago),476
+V-1093,engine,parts_replacement,113,engine inspection — wear within limits (113d ago),3464
+V-1093,transmission,fault_code,122,Scheduled transmission PM completed (122d ago),4842
+V-1093,transmission,preventive_service,122,Elevated transmission temperature recorded (122d ago),4842
+V-1093,transmission,inspection,134,Elevated transmission temperature recorded (134d ago),4794
+V-1093,hydraulics,preventive_service,136,Deferred hydraulics work pending parts (136d ago),380
+V-1093,hydraulics,oil_analysis,140,Elevated hydraulics temperature recorded (140d ago),364
+V-1093,hydraulics,fault_code,168,hydraulics fault cleared after service (168d ago),252
+V-1094,electrical,oil_analysis,90,Deferred electrical work pending parts (90d ago),2665
+V-1094,electrical,corrective_repair,106,electrical fault cleared after service (106d ago),2601
+V-1094,electrical,parts_replacement,143,Deferred electrical work pending parts (143d ago),2453
+V-1095,brakes,inspection,31,Deferred brakes work pending parts (31d ago),2077
+V-1095,brakes,inspection,84,brakes inspection — wear within limits (84d ago),1865
+V-1095,brakes,preventive_service,119,brakes fault cleared after service (119d ago),1725
+V-1095,brakes,fault_code,121,brakes inspection — wear within limits (121d ago),1717
+V-1095,brakes,inspection,171,brakes inspection — wear within limits (171d ago),1517
+V-1096,engine,fault_code,4,Deferred engine work pending parts (4d ago),917
+V-1096,engine,corrective_repair,42,engine inspection — wear within limits (42d ago),765
+V-1096,engine,parts_replacement,49,engine fault cleared after service (49d ago),737
+V-1096,engine,corrective_repair,61,Elevated engine temperature recorded (61d ago),689
+V-1096,engine,preventive_service,64,Scheduled engine PM completed (64d ago),677
+V-1097,transmission,oil_analysis,77,transmission inspection — wear within limits (77d ago),38
+V-1097,transmission,parts_replacement,104,transmission fault cleared after service (104d ago),0
+V-1098,cooling,fault_code,22,Scheduled cooling PM completed (22d ago),4331
+V-1098,cooling,fault_code,54,cooling fault cleared after service (54d ago),4203
+V-1098,electrical,preventive_service,59,Elevated electrical temperature recorded (59d ago),2217
+V-1098,electrical,preventive_service,90,Deferred electrical work pending parts (90d ago),2093
+V-1098,cooling,preventive_service,109,Elevated cooling temperature recorded (109d ago),3983
+V-1098,electrical,corrective_repair,129,electrical fault cleared after service (129d ago),1937
+V-1098,electrical,corrective_repair,157,Deferred electrical work pending parts (157d ago),1825
+V-1098,electrical,corrective_repair,178,Elevated electrical temperature recorded (178d ago),1741
+V-1099,suspension,parts_replacement,1,Deferred suspension work pending parts (1d ago),3722
+V-1099,suspension,oil_analysis,30,Scheduled suspension PM completed (30d ago),3606
+V-1099,suspension,corrective_repair,50,Elevated suspension temperature recorded (50d ago),3526
+V-1099,suspension,parts_replacement,52,suspension fault cleared after service (52d ago),3518
+V-1099,suspension,oil_analysis,111,Elevated suspension temperature recorded (111d ago),3282
+V-1100,hydraulics,parts_replacement,1,Scheduled hydraulics PM completed (1d ago),3289
+V-1100,electrical,inspection,17,electrical fault cleared after service (17d ago),2589
+V-1100,hydraulics,fault_code,22,Deferred hydraulics work pending parts (22d ago),3205
+V-1100,hydraulics,parts_replacement,38,hydraulics fault cleared after service (38d ago),3141
+V-1100,engine,parts_replacement,56,Deferred engine work pending parts (56d ago),2610
+V-1100,electrical,fault_code,57,Elevated electrical temperature recorded (57d ago),2429
+V-1100,engine,inspection,102,engine fault cleared after service (102d ago),2426
+V-1100,hydraulics,oil_analysis,114,hydraulics inspection — wear within limits (114d ago),2837
+V-1100,hydraulics,parts_replacement,177,hydraulics inspection — wear within limits (177d ago),2585
+V-1101,cooling,inspection,56,Elevated cooling temperature recorded (56d ago),3276
+V-1101,cooling,corrective_repair,137,Elevated cooling temperature recorded (137d ago),2952
+V-1101,cooling,inspection,171,Elevated cooling temperature recorded (171d ago),2816
+V-1102,brakes,inspection,10,Elevated brakes temperature recorded (10d ago),4090
+V-1102,suspension,fault_code,19,Elevated suspension temperature recorded (19d ago),3996
+V-1102,brakes,preventive_service,38,Deferred brakes work pending parts (38d ago),3978
+V-1102,suspension,corrective_repair,43,Scheduled suspension PM completed (43d ago),3900
+V-1102,suspension,inspection,72,Elevated suspension temperature recorded (72d ago),3784
+V-1102,brakes,parts_replacement,87,Scheduled brakes PM completed (87d ago),3782
+V-1102,suspension,oil_analysis,90,Scheduled suspension PM completed (90d ago),3712
+V-1102,brakes,oil_analysis,96,brakes fault cleared after service (96d ago),3746
+V-1102,suspension,fault_code,103,Deferred suspension work pending parts (103d ago),3660
+V-1102,suspension,corrective_repair,112,Scheduled suspension PM completed (112d ago),3624
+V-1102,brakes,oil_analysis,143,brakes inspection — wear within limits (143d ago),3558
+V-1102,brakes,oil_analysis,146,Elevated brakes temperature recorded (146d ago),3546
+V-1103,brakes,parts_replacement,15,brakes inspection — wear within limits (15d ago),1501
+V-1103,brakes,oil_analysis,24,brakes fault cleared after service (24d ago),1465
+V-1103,brakes,fault_code,24,brakes inspection — wear within limits (24d ago),1465
+V-1103,transmission,parts_replacement,26,transmission inspection — wear within limits (26d ago),4760
+V-1103,brakes,corrective_repair,69,brakes inspection — wear within limits (69d ago),1285
+V-1103,brakes,parts_replacement,70,brakes fault cleared after service (70d ago),1281
+V-1103,brakes,parts_replacement,97,Scheduled brakes PM completed (97d ago),1173
+V-1103,transmission,fault_code,134,Elevated transmission temperature recorded (134d ago),4328
+V-1104,cooling,fault_code,69,cooling inspection — wear within limits (69d ago),3858
+V-1104,cooling,fault_code,72,Deferred cooling work pending parts (72d ago),3846
+V-1104,cooling,fault_code,178,cooling inspection — wear within limits (178d ago),3422
+V-1105,electrical,parts_replacement,118,Elevated electrical temperature recorded (118d ago),1732
+V-1105,electrical,oil_analysis,177,electrical fault cleared after service (177d ago),1496
+V-1106,cooling,inspection,32,Deferred cooling work pending parts (32d ago),4088
+V-1106,brakes,parts_replacement,48,Deferred brakes work pending parts (48d ago),2567
+V-1106,transmission,preventive_service,50,Scheduled transmission PM completed (50d ago),4702
+V-1106,cooling,inspection,58,Deferred cooling work pending parts (58d ago),3984
+V-1106,brakes,corrective_repair,73,Elevated brakes temperature recorded (73d ago),2467
+V-1106,cooling,corrective_repair,74,cooling inspection — wear within limits (74d ago),3920
+V-1106,brakes,oil_analysis,75,Elevated brakes temperature recorded (75d ago),2459
+V-1106,brakes,preventive_service,87,Deferred brakes work pending parts (87d ago),2411
+V-1106,transmission,corrective_repair,175,transmission inspection — wear within limits (175d ago),4202
+V-1107,cooling,oil_analysis,106,Elevated cooling temperature recorded (106d ago),4251
+V-1107,cooling,fault_code,133,Elevated cooling temperature recorded (133d ago),4143
+V-1107,cooling,parts_replacement,138,cooling inspection — wear within limits (138d ago),4123
+V-1107,cooling,oil_analysis,146,Scheduled cooling PM completed (146d ago),4091
+V-1108,electrical,corrective_repair,16,Deferred electrical work pending parts (16d ago),4536
+V-1108,electrical,corrective_repair,17,electrical inspection — wear within limits (17d ago),4532
+V-1108,hydraulics,inspection,20,Deferred hydraulics work pending parts (20d ago),3018
+V-1108,electrical,fault_code,66,Elevated electrical temperature recorded (66d ago),4336
+V-1108,cooling,fault_code,69,Deferred cooling work pending parts (69d ago),563
+V-1108,electrical,inspection,83,electrical inspection — wear within limits (83d ago),4268
+V-1108,hydraulics,preventive_service,85,Scheduled hydraulics PM completed (85d ago),2758
+V-1108,hydraulics,inspection,97,Elevated hydraulics temperature recorded (97d ago),2710
+V-1108,hydraulics,inspection,119,Deferred hydraulics work pending parts (119d ago),2622
+V-1108,electrical,preventive_service,132,Elevated electrical temperature recorded (132d ago),4072
+V-1108,cooling,fault_code,156,Deferred cooling work pending parts (156d ago),215
+V-1108,cooling,parts_replacement,156,cooling inspection — wear within limits (156d ago),215
+V-1108,cooling,fault_code,157,Scheduled cooling PM completed (157d ago),211
+V-1108,electrical,fault_code,176,electrical fault cleared after service (176d ago),3896
+V-1109,electrical,oil_analysis,35,Scheduled electrical PM completed (35d ago),2284
+V-1109,electrical,fault_code,58,electrical fault cleared after service (58d ago),2192
+V-1109,electrical,inspection,105,Deferred electrical work pending parts (105d ago),2004
+V-1109,electrical,fault_code,130,electrical fault cleared after service (130d ago),1904
+V-1109,electrical,fault_code,142,electrical fault cleared after service (142d ago),1856
+V-1109,electrical,corrective_repair,150,electrical inspection — wear within limits (150d ago),1824
+V-1110,engine,inspection,45,Elevated engine temperature recorded (45d ago),109
+V-1110,hydraulics,fault_code,49,Scheduled hydraulics PM completed (49d ago),1897
+V-1110,engine,fault_code,66,Elevated engine temperature recorded (66d ago),25
+V-1110,electrical,inspection,75,Scheduled electrical PM completed (75d ago),3521
+V-1110,electrical,inspection,86,Deferred electrical work pending parts (86d ago),3477
+V-1110,hydraulics,inspection,98,Deferred hydraulics work pending parts (98d ago),1701
+V-1110,electrical,oil_analysis,101,electrical fault cleared after service (101d ago),3417
+V-1110,electrical,parts_replacement,135,electrical fault cleared after service (135d ago),3281
+V-1110,hydraulics,preventive_service,140,Deferred hydraulics work pending parts (140d ago),1533
+V-1110,hydraulics,parts_replacement,146,hydraulics fault cleared after service (146d ago),1509
+V-1110,electrical,oil_analysis,156,electrical fault cleared after service (156d ago),3197
+V-1110,electrical,preventive_service,165,Scheduled electrical PM completed (165d ago),3161
+V-1111,cooling,oil_analysis,57,Scheduled cooling PM completed (57d ago),382
+V-1111,cooling,parts_replacement,62,Elevated cooling temperature recorded (62d ago),362
+V-1111,cooling,oil_analysis,78,Elevated cooling temperature recorded (78d ago),298
+V-1111,cooling,parts_replacement,90,cooling fault cleared after service (90d ago),250
+V-1111,cooling,fault_code,94,Elevated cooling temperature recorded (94d ago),234
+V-1112,hydraulics,parts_replacement,15,hydraulics inspection — wear within limits (15d ago),4370
+V-1112,hydraulics,fault_code,68,Scheduled hydraulics PM completed (68d ago),4158
+V-1112,hydraulics,inspection,106,hydraulics fault cleared after service (106d ago),4006
+V-1112,hydraulics,inspection,142,Scheduled hydraulics PM completed (142d ago),3862
+V-1112,hydraulics,parts_replacement,158,hydraulics fault cleared after service (158d ago),3798
+V-1113,cooling,parts_replacement,11,cooling fault cleared after service (11d ago),226
+V-1113,brakes,corrective_repair,13,brakes fault cleared after service (13d ago),723
+V-1113,transmission,preventive_service,34,transmission inspection — wear within limits (34d ago),4542
+V-1113,transmission,oil_analysis,39,Deferred transmission work pending parts (39d ago),4522
+V-1113,transmission,corrective_repair,39,Elevated transmission temperature recorded (39d ago),4522
+V-1113,brakes,fault_code,41,Deferred brakes work pending parts (41d ago),611
+V-1113,cooling,corrective_repair,109,Scheduled cooling PM completed (109d ago),0
+V-1113,cooling,oil_analysis,134,Deferred cooling work pending parts (134d ago),0
+V-1113,brakes,fault_code,153,Elevated brakes temperature recorded (153d ago),163
+V-1113,transmission,preventive_service,154,Elevated transmission temperature recorded (154d ago),4062
+V-1113,transmission,preventive_service,166,Elevated transmission temperature recorded (166d ago),4014
+V-1114,cooling,oil_analysis,8,Deferred cooling work pending parts (8d ago),1608
+V-1114,cooling,parts_replacement,28,Deferred cooling work pending parts (28d ago),1528
+V-1114,electrical,inspection,32,Deferred electrical work pending parts (32d ago),4262
+V-1114,electrical,parts_replacement,51,Elevated electrical temperature recorded (51d ago),4186
+V-1114,engine,corrective_repair,78,Deferred engine work pending parts (78d ago),4032
+V-1114,electrical,fault_code,90,electrical fault cleared after service (90d ago),4030
+V-1114,cooling,preventive_service,112,Deferred cooling work pending parts (112d ago),1192
+V-1114,electrical,inspection,136,electrical fault cleared after service (136d ago),3846
+V-1114,electrical,inspection,141,Deferred electrical work pending parts (141d ago),3826
+V-1114,engine,oil_analysis,154,Elevated engine temperature recorded (154d ago),3728
+V-1114,engine,inspection,158,Deferred engine work pending parts (158d ago),3712
+V-1114,cooling,parts_replacement,177,Scheduled cooling PM completed (177d ago),932
+V-1115,brakes,parts_replacement,7,Elevated brakes temperature recorded (7d ago),560
+V-1115,engine,fault_code,19,Deferred engine work pending parts (19d ago),4792
+V-1115,engine,fault_code,26,Deferred engine work pending parts (26d ago),4764
+V-1115,engine,oil_analysis,54,engine fault cleared after service (54d ago),4652
+V-1115,engine,inspection,73,Deferred engine work pending parts (73d ago),4576
+V-1115,engine,oil_analysis,94,Deferred engine work pending parts (94d ago),4492
+V-1115,brakes,inspection,112,brakes inspection — wear within limits (112d ago),140
+V-1115,engine,oil_analysis,177,Scheduled engine PM completed (177d ago),4160
+V-1116,brakes,preventive_service,13,Scheduled brakes PM completed (13d ago),5150
+V-1116,engine,inspection,33,engine fault cleared after service (33d ago),3002
+V-1116,transmission,preventive_service,33,transmission inspection — wear within limits (33d ago),1118
+V-1116,engine,fault_code,56,Deferred engine work pending parts (56d ago),2910
+V-1116,engine,fault_code,56,engine fault cleared after service (56d ago),2910
+V-1116,brakes,fault_code,63,Deferred brakes work pending parts (63d ago),4950
+V-1116,transmission,corrective_repair,122,Deferred transmission work pending parts (122d ago),762
+V-1116,transmission,preventive_service,131,Scheduled transmission PM completed (131d ago),726
+V-1116,transmission,parts_replacement,158,Scheduled transmission PM completed (158d ago),618
+V-1117,engine,preventive_service,1,engine fault cleared after service (1d ago),4475
+V-1117,engine,corrective_repair,7,engine fault cleared after service (7d ago),4451
+V-1117,suspension,fault_code,27,Scheduled suspension PM completed (27d ago),4004
+V-1117,engine,fault_code,73,Scheduled engine PM completed (73d ago),4187
+V-1117,engine,preventive_service,121,engine inspection — wear within limits (121d ago),3995
+V-1117,suspension,fault_code,123,Scheduled suspension PM completed (123d ago),3620
+V-1118,suspension,parts_replacement,2,suspension inspection — wear within limits (2d ago),559
+V-1118,hydraulics,preventive_service,2,hydraulics fault cleared after service (2d ago),3216
+V-1118,suspension,parts_replacement,21,Deferred suspension work pending parts (21d ago),483
+V-1118,suspension,oil_analysis,24,suspension fault cleared after service (24d ago),471
+V-1118,transmission,inspection,32,transmission inspection — wear within limits (32d ago),2376
+V-1118,hydraulics,corrective_repair,33,hydraulics fault cleared after service (33d ago),3092
+V-1118,hydraulics,fault_code,52,hydraulics fault cleared after service (52d ago),3016
+V-1118,hydraulics,preventive_service,65,Scheduled hydraulics PM completed (65d ago),2964
+V-1118,transmission,corrective_repair,89,Elevated transmission temperature recorded (89d ago),2148
+V-1118,hydraulics,oil_analysis,128,hydraulics inspection — wear within limits (128d ago),2712
+V-1118,transmission,preventive_service,132,transmission inspection — wear within limits (132d ago),1976
+V-1119,cooling,fault_code,1,Deferred cooling work pending parts (1d ago),3455
+V-1119,suspension,oil_analysis,11,Deferred suspension work pending parts (11d ago),3754
+V-1119,suspension,preventive_service,14,suspension inspection — wear within limits (14d ago),3742
+V-1119,suspension,corrective_repair,52,suspension fault cleared after service (52d ago),3590
+V-1119,transmission,fault_code,56,Elevated transmission temperature recorded (56d ago),4787
+V-1119,cooling,parts_replacement,78,Elevated cooling temperature recorded (78d ago),3147
+V-1119,cooling,inspection,108,cooling inspection — wear within limits (108d ago),3027
+V-1119,suspension,preventive_service,157,Elevated suspension temperature recorded (157d ago),3170
+V-1119,transmission,preventive_service,165,Elevated transmission temperature recorded (165d ago),4351
+V-1119,cooling,parts_replacement,169,cooling fault cleared after service (169d ago),2783

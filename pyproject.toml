@@ -1,0 +1,39 @@
+[project]
+name = "predictive-maintenance"
+version = "0.1.0"
+description = "Predictive Maintenance Readiness Assistant — Virtualitics interview demo"
+requires-python = ">=3.11"
+dependencies = [
+  "numpy>=1.26",
+  "pandas>=2.1",
+  "scikit-learn>=1.4",
+  "xgboost>=2.0",
+  "joblib>=1.3",
+  "streamlit>=1.32",
+  "fastapi>=0.110",
+  "uvicorn[standard]>=0.27",
+  "faiss-cpu>=1.7.4",
+  "openai>=1.12",
+  "pydantic>=2.6",
+  "httpx>=0.27",
+  "python-dotenv>=1.0",
+  "plotly>=5.18",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.3"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+
+[tool.ruff.lint.per-file-ignores]
+"app/streamlit_app.py" = ["E402"]
+"src/predictive_maintenance/data/generate.py" = ["E501"]

@@ -1,0 +1,57 @@
+[
+  {
+    "source": "maintenance_manual.md",
+    "chunk_id": 0,
+    "text": "# Fleet Maintenance Manual (Synthetic)\n\n## Engine\nEngine failure risk rises sharply after 4,000 operating hours without a major service.\nMonitor oil analysis trends, coolant temperature, and fault codes EC-12 / EC-44.\nIf failures_last_90d >= 2 for the engine, schedule a teardown inspection within 14 days."
+  },
+  {
+    "source": "maintenance_manual.md",
+    "chunk_id": 1,
+    "text": "es_last_90d >= 2 for the engine, schedule a teardown inspection within 14 days.\n\n## Transmission\nTransmission slip and delayed engagement often precede hard failures.\nHigh fleet_same_component_failures_90d for transmissions signals a parts-quality or operating-condition issue \u2014\ncross-check unit training tempo and fluid change intervals."
+  },
+  {
+    "source": "maintenance_manual.md",
+    "chunk_id": 2,
+    "text": "g-condition issue \u2014\ncross-check unit training tempo and fluid change intervals.\n\n## Brakes\nBrake pad life is hours-driven. After 2,500 hours, inspect thickness every 30 days.\nSystem failures in the last 30 days involving brakes require immediate deadline status until cleared."
+  },
+  {
+    "source": "maintenance_manual.md",
+    "chunk_id": 3,
+    "text": "last 30 days involving brakes require immediate deadline status until cleared.\n\n## Electrical\nIntermittent electrical faults are high false-positive drivers. Prefer trend confirmation\n(multiple failures_last_90d) before deadline. Check battery SOC, ground straps, and CAN bus logs."
+  },
+  {
+    "source": "maintenance_manual.md",
+    "chunk_id": 4,
+    "text": "_last_90d) before deadline. Check battery SOC, ground straps, and CAN bus logs.\n\n## Cooling\nCooling system failures cluster in high ambient temperature seasons.\nIf component_age_days > 900 and system_failures_last_30d > 0, flush and pressure-test before next mission.\n\n## Hydraulics / Suspension\nHydraulic leaks reduce readiness faster than raw failure counts suggest.\nAny active leak plus maintenance_actions_last_90d == 0 is a readiness red flag."
+  },
+  {
+    "source": "preventive_maintenance_guide.md",
+    "chunk_id": 0,
+    "text": "# Preventive Maintenance Guide (Synthetic)\n\n## Cadence\n- Daily: fluid levels, tire pressure, fault-code scan\n- Weekly: brake/steering walkaround, coolant concentration\n- 90-day: oil analysis, transmission fluid sample, electrical load test\n- Annual: major component age review vs OEM service life"
+  },
+  {
+    "source": "preventive_maintenance_guide.md",
+    "chunk_id": 1,
+    "text": ", electrical load test\n- Annual: major component age review vs OEM service life\n\n## Risk-driven escalation\nWhen predicted failure probability exceeds the operating threshold (recall-biased, typically ~0.35),\ndo not wait for the calendar interval. Pull the vehicle for condition-based maintenance."
+  },
+  {
+    "source": "preventive_maintenance_guide.md",
+    "chunk_id": 2,
+    "text": "it for the calendar interval. Pull the vehicle for condition-based maintenance.\n\n## Parts and supply\nIf fleet_same_component_failures_90d is elevated, pre-position spare parts for that component\nacross the battalion before the next field exercise.\n\n## Documentation\nEvery corrective action must cite the triggering signal (hours, age, failures, or model score)\nso readiness officers can audit decisions after the mission."
+  },
+  {
+    "source": "readiness_policy.md",
+    "chunk_id": 0,
+    "text": "# Unit Readiness Policy (Synthetic)\n\n## Readiness states\n- GREEN: risk < 0.20 and no open deadline faults \u2014 fully mission capable\n- AMBER: 0.20 <= risk < 0.50 or deferred non-critical maintenance \u2014 limited mission capable\n- RED: risk >= 0.50 or safety-critical open fault \u2014 not mission capable"
+  },
+  {
+    "source": "readiness_policy.md",
+    "chunk_id": 1,
+    "text": "capable\n- RED: risk >= 0.50 or safety-critical open fault \u2014 not mission capable\n\n## Recommended actions\n- GREEN: continue scheduled PM; no special action\n- AMBER: schedule inspection within 7 days; brief commander on contingency\n- RED: deadline vehicle; assign maintenance priority 1; notify readiness officer same day"
+  },
+  {
+    "source": "readiness_policy.md",
+    "chunk_id": 2,
+    "text": "dline vehicle; assign maintenance priority 1; notify readiness officer same day\n\n## Operating philosophy\nMissed failures cost more than false alarms. Prefer recall over precision at the decision threshold.\nThe predictive model is a decision-support signal, not an automatic deadline authority \u2014\nmaintainers retain final say after reviewing contributing features and maintenance history."
+  }
+]
