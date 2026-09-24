@@ -1,6 +1,6 @@
 # Predictive Maintenance Readiness Assistant
 
-Interview demo for a Virtualitics Solutions Architect role: traditional ML failure-risk scoring plus a GenAI maintenance advisor (RAG + simple agent tools), wrapped in a Streamlit fleet readiness dashboard.
+Predictive Maintenance App demo: traditional ML failure-risk scoring plus a GenAI maintenance advisor (RAG + simple agent tools), wrapped in a Streamlit fleet readiness dashboard.
 
 ## What the demo shows
 
@@ -75,7 +75,3 @@ docs_corpus/                  # Synthetic maintenance manuals
 models/                       # best_model.joblib, metrics, RAG index
 tests/
 ```
-
-## Interview framing
-
-The predictive model identifies risk; the generative layer makes it actionable. Design choices worth explaining: feature set (age, hours, recent failures, fleetwide same-component pressure, recent maintenance), recall-biased threshold, deterministic local embeddings so RAG works offline, and agent tools that mirror how a readiness officer would pull health + history + doctrine.
