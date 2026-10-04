@@ -1,7 +1,7 @@
 [project]
 name = "predictive-maintenance"
 version = "0.1.0"
-description = "Predictive Maintenance Readiness Assistant — Virtualitics interview demo"
+description = "FRCE MV-22 PMI Delay Assistant — Virtualitics SA take-home prototype"
 requires-python = ">=3.11"
 dependencies = [
   "numpy>=1.26",

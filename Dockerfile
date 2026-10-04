@@ -18,11 +18,11 @@ COPY . .
 
 # Ensure demo artifacts exist inside the image
 RUN chmod +x scripts/bootstrap.sh \
-    && python -m predictive_maintenance.data.generate --n-vehicles 120 \
+    && python -m predictive_maintenance.data.generate --n-vehicles 48 \
     && python -m predictive_maintenance.ml.train \
     && python -m predictive_maintenance.rag.index
 
-EXPOSE 8507 8700
+EXPOSE 8513 8713
 
-# Default: Streamlit dashboard on uncommon port 8507
-CMD ["streamlit", "run", "app/streamlit_app.py", "--server.port=8507", "--server.address=0.0.0.0"]
+# Default: Streamlit dashboard on uncommon port 8513
+CMD ["streamlit", "run", "app/streamlit_app.py", "--server.port=8513", "--server.address=0.0.0.0"]

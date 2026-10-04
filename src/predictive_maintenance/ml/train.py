@@ -1,4 +1,4 @@
-"""Train LogReg → Random Forest → XGBoost; persist the best model by ROC-AUC."""
+"""Train LogReg → Random Forest → XGBoost; persist best model by ROC-AUC."""
 
 from __future__ import annotations
 
@@ -113,7 +113,6 @@ def train(
         x, y, test_size=0.25, random_state=seed, stratify=y
     )
 
-    # Persist split for demo reproducibility / notebook-less inspection
     split_meta = {
         "n_train": int(len(x_train)),
         "n_test": int(len(x_test)),
@@ -148,6 +147,7 @@ def train(
         "threshold": OPERATING_THRESHOLD,
         "metrics": results[best_name],
         "all_metrics": results,
+        "target": TARGET_COLUMN,
     }
     model_path = out / "best_model.joblib"
     metrics_path = out / "metrics.json"
@@ -156,6 +156,7 @@ def train(
         json.dumps(
             {
                 "best_model": best_name,
+                "target": TARGET_COLUMN,
                 "operating_threshold": OPERATING_THRESHOLD,
                 "split": split_meta,
                 "models": results,
@@ -165,27 +166,21 @@ def train(
         encoding="utf-8",
     )
 
-    # Scored fleet for the dashboard
     if hasattr(best_model, "predict_proba"):
         full_proba = best_model.predict_proba(df[FEATURE_COLUMNS])[:, 1]
     else:
         full_proba = best_model.decision_function(df[FEATURE_COLUMNS])
         full_proba = 1 / (1 + np.exp(-full_proba))
     scored = df.copy()
-    scored["failure_risk"] = full_proba
-    scored["risk_band"] = scored["failure_risk"].apply(_risk_band)
-    scored["recommended_action"] = scored["risk_band"].map(
-        {
-            "GREEN": "Continue scheduled PM",
-            "AMBER": "Inspect within 7 days; brief commander",
-            "RED": "Deadline vehicle — priority 1 maintenance",
-        }
-    )
+    scored["overrun_risk"] = full_proba
+    scored["failure_risk"] = full_proba  # alias for shared UI helpers
+    scored["risk_band"] = scored["overrun_risk"].apply(_risk_band)
+    scored["recommended_action"] = scored["risk_band"].map(_action_for_band)
     scored_path = PROCESSED_DIR / "fleet_scored.csv"
     scored.to_csv(scored_path, index=False)
 
     print(f"Best model: {best_name} → {model_path}")
-    print(f"Scored fleet → {scored_path}")
+    print(f"Scored PMI line → {scored_path}")
     return {"best_model": best_name, "metrics": results, "model_path": str(model_path)}
 
 
@@ -197,8 +192,16 @@ def _risk_band(p: float) -> str:
     return "GREEN"
 
 
+def _action_for_band(band: str) -> str:
+    return {
+        "GREEN": "Continue PMI plan; monitor drivers at stand-up",
+        "AMBER": "Re-plan within 48h — review O&A / AWP / eng queue",
+        "RED": "Production priority — mitigate primary delay driver now",
+    }[band]
+
+
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Train failure-risk models")
+    parser = argparse.ArgumentParser(description="Train PMI overrun-risk models")
     parser.add_argument("--seed", type=int, default=42)
     args = parser.parse_args()
     train(seed=args.seed)

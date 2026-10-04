@@ -1,4 +1,4 @@
-"""Load the best saved model and score vehicles / feature contributions."""
+"""Load the best saved model and score BUNO PMI overrun risk."""
 
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ from predictive_maintenance.config import (
 
 
 class FailureRiskModel:
-    """Thin inference wrapper around the trained artifact."""
+    """Inference wrapper — name retained for compatibility; scores PMI overrun risk."""
 
     def __init__(self, model_path: Path | None = None):
         path = model_path or (MODELS_DIR / "best_model.joblib")
@@ -41,9 +41,11 @@ class FailureRiskModel:
         proba = float(self.predict_proba(frame)[0])
         band = risk_band(proba)
         return {
-            "failure_risk": round(proba, 4),
+            "overrun_risk": round(proba, 4),
+            "failure_risk": round(proba, 4),  # alias
             "risk_band": band,
             "threshold": self.threshold,
+            "predicted_overrun": proba >= self.threshold,
             "predicted_failure": proba >= self.threshold,
             "recommended_action": recommended_action(band),
             "model_name": self.model_name,
@@ -59,6 +61,10 @@ class FailureRiskModel:
         return features
 
 
+# Alias for clarity in FRCE framing
+PMIOverrunModel = FailureRiskModel
+
+
 def risk_band(p: float) -> str:
     if p >= 0.50:
         return "RED"
@@ -69,33 +75,33 @@ def risk_band(p: float) -> str:
 
 def recommended_action(band: str) -> str:
     return {
-        "GREEN": "Continue scheduled PM",
-        "AMBER": "Inspect within 7 days; brief commander",
-        "RED": "Deadline vehicle — priority 1 maintenance",
+        "GREEN": "Continue PMI plan; monitor drivers at stand-up",
+        "AMBER": "Re-plan within 48h — review O&A / AWP / eng queue",
+        "RED": "Production priority — mitigate primary delay driver now",
     }[band]
 
 
 def contributing_signals(row: pd.Series) -> list[dict[str, Any]]:
-    """Heuristic feature contributions for demo explainability (not SHAP).
-
-    Ranks features by how far they sit above a healthy baseline so maintainers
-    can see *why* the model is concerned without a black-box explainer dependency.
-    """
+    """Heuristic feature contributions for demo explainability (not SHAP)."""
     baselines = {
-        "component_age_days": 365.0,
-        "operating_hours": 1500.0,
-        "failures_last_90d": 0.5,
-        "fleet_same_component_failures_90d": 2.0,
-        "system_failures_last_30d": 0.3,
-        "maintenance_actions_last_90d": 2.0,  # more maintenance is protective
+        "prior_oa_findings": 1.0,
+        "squadron_corr_wiring_score": 2.5,
+        "awp_days_open": 3.0,
+        "zero_balance_hits": 0.5,
+        "eng_queue_age_days": 2.0,
+        "prior_late_pmis": 0.5,
+        "planned_turnaround_days": 110.0,
+        "pct_work_complete": 0.55,  # higher completion is protective when on-plan
     }
     directions = {
-        "component_age_days": 1,
-        "operating_hours": 1,
-        "failures_last_90d": 1,
-        "fleet_same_component_failures_90d": 1,
-        "system_failures_last_30d": 1,
-        "maintenance_actions_last_90d": -1,
+        "prior_oa_findings": 1,
+        "squadron_corr_wiring_score": 1,
+        "awp_days_open": 1,
+        "zero_balance_hits": 1,
+        "eng_queue_age_days": 1,
+        "prior_late_pmis": 1,
+        "planned_turnaround_days": 1,  # longer plans still overrun when drivers spike
+        "pct_work_complete": -1,
     }
     signals = []
     for col in FEATURE_COLUMNS:
@@ -105,7 +111,7 @@ def contributing_signals(row: pd.Series) -> list[dict[str, Any]]:
         if direction > 0:
             excess = max(0.0, (value - base) / max(base, 1.0))
         else:
-            excess = max(0.0, (base - value) / max(base, 1.0))
+            excess = max(0.0, (base - value) / max(base, 1e-3))
         signals.append(
             {
                 "feature": col,

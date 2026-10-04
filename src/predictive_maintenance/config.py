@@ -1,4 +1,4 @@
-"""Shared paths and feature definitions."""
+"""Shared paths and feature definitions for the FRCE MV-22 PMI pilot demo."""
 
 from pathlib import Path
 
@@ -10,28 +10,40 @@ MODELS_DIR = ROOT / "models"
 DOCS_DIR = ROOT / "docs_corpus"
 RAG_INDEX_DIR = MODELS_DIR / "rag_index"
 
+# Tabular features for P(PMI overrun / late delivery)
 FEATURE_COLUMNS = [
-    "component_age_days",
-    "operating_hours",
-    "failures_last_90d",
-    "fleet_same_component_failures_90d",
-    "system_failures_last_30d",
-    "maintenance_actions_last_90d",
+    "prior_oa_findings",
+    "squadron_corr_wiring_score",
+    "awp_days_open",
+    "zero_balance_hits",
+    "eng_queue_age_days",
+    "prior_late_pmis",
+    "planned_turnaround_days",
+    "pct_work_complete",
 ]
 
-TARGET_COLUMN = "failure_next_30_days"
+TARGET_COLUMN = "pmi_overrun"
 
-# Recall-biased operating threshold for fleet readiness decisions
+# Recall-biased operating threshold — catch late aircraft early
 OPERATING_THRESHOLD = 0.35
 
-COMPONENTS = [
-    "engine",
-    "transmission",
-    "brakes",
-    "electrical",
-    "suspension",
-    "cooling",
-    "hydraulics",
+AIRCRAFT_TYPE = "MV-22"
+SQUADRONS = ["VMM-261", "VMM-263", "VMM-365", "VMM-162", "VMM-266", "VMM-764"]
+
+DELAY_DRIVERS = [
+    "Over-and-above",
+    "AWP",
+    "Engineering",
+    "On-plan",
 ]
 
-VEHICLE_TYPES = ["HMMWV", "FMTV", "MRAP", "JLTV", "LMTV"]
+# Notional shops / systems that surface O&A findings
+SYSTEMS = [
+    "proprotor",
+    "drive_system",
+    "avionics",
+    "hydraulics",
+    "structure",
+    "wiring",
+    "corrosion",
+]

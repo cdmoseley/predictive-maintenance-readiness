@@ -2,20 +2,20 @@ services:
   streamlit:
     build: .
     ports:
-      - "8507:8507"
+      - "8513:8513"
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
       - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o-mini}
       - PYTHONPATH=/app/src
     command: >
       streamlit run app/streamlit_app.py
-      --server.port=8507
+      --server.port=8513
       --server.address=0.0.0.0
 
   api:
     build: .
     ports:
-      - "8700:8700"
+      - "8713:8713"
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
       - OPENAI_MODEL=${OPENAI_MODEL:-gpt-4o-mini}
@@ -23,6 +23,6 @@ services:
     command: >
       uvicorn predictive_maintenance.api:app
       --host 0.0.0.0
-      --port 8700
+      --port 8713
     profiles:
       - api

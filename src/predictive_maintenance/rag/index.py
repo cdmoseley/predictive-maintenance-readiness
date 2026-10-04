@@ -103,7 +103,8 @@ class MaintenanceRAG:
         q = embed_texts([query])
         scores, idxs = self.index.search(q, min(k, len(self.chunks)))
         hits = []
-        for score, idx in zip(scores[0], idxs[0], strict=True):
+        # Py3.9-safe: do not pass strict to zip()
+        for score, idx in zip(scores[0], idxs[0]):
             if idx < 0:
                 continue
             chunk = dict(self.chunks[int(idx)])

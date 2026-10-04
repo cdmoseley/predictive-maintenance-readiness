@@ -1,5 +1,30 @@
 [
   {
+    "source": "disposition_archive.md",
+    "chunk_id": 0,
+    "text": "# Local Engineering Disposition Archive (Notional \u2014 Demo Only)\n\n## DISP-MV22-1042 \u2014 Proprotor hub seal weepage\nCondition: Light weepage at proprotor hub seal during PMI, within limited reuse criteria\nafter inspection. Disposition: Continue with increased inspection interval; replace seal\nkit if weepage exceeds limit in tech data table. Keywords: proprotor, seal, weepage, PMI."
+  },
+  {
+    "source": "disposition_archive.md",
+    "chunk_id": 1,
+    "text": "page exceeds limit in tech data table. Keywords: proprotor, seal, weepage, PMI.\n\n## DISP-MV22-1188 \u2014 Avionics wire chafing zone 3\nCondition: Chafing on wire harness not explicitly illustrated in IETM figure. Disposition:\nRepair per standard wiring practice; add protective grommet; document as local O&A lesson\nlearned for sister BUNOs. Keywords: wiring, chafing, avionics, harness."
+  },
+  {
+    "source": "disposition_archive.md",
+    "chunk_id": 2,
+    "text": "lesson\nlearned for sister BUNOs. Keywords: wiring, chafing, avionics, harness.\n\n## DISP-MV22-1201 \u2014 Skin corrosion under fairing\nCondition: Corrosion under fairing beyond blend-out limits in referenced repair. Disposition:\nInstall approved patch kit; engineering sign-off required before close. Keywords: corrosion,\nstructure, fairing, patch."
+  },
+  {
+    "source": "disposition_archive.md",
+    "chunk_id": 3,
+    "text": "sign-off required before close. Keywords: corrosion,\nstructure, fairing, patch.\n\n## DISP-MV22-1266 \u2014 Hydraulic pump case porosity\nCondition: Porosity indication on hydraulic pump case during NDI. Disposition: Remove and\nreplace pump; do not blend. Expedite NSN if zero-balance. Keywords: hydraulics, pump, NDI, AWP."
+  },
+  {
+    "source": "disposition_archive.md",
+    "chunk_id": 4,
+    "text": "not blend. Expedite NSN if zero-balance. Keywords: hydraulics, pump, NDI, AWP.\n\n## Reuse policy\nEngineers should search this archive for similar ATA/zone/defect patterns before submitting\na new request. Cite the prior disposition ID in the new request if requesting confirmation\nor deviation. AI search results are not a substitute for engineer judgment."
+  },
+  {
     "source": "maintenance_manual.md",
     "chunk_id": 0,
     "text": "# Fleet Maintenance Manual (Synthetic)\n\n## Engine\nEngine failure risk rises sharply after 4,000 operating hours without a major service.\nMonitor oil analysis trends, coolant temperature, and fault codes EC-12 / EC-44.\nIf failures_last_90d >= 2 for the engine, schedule a teardown inspection within 14 days."
@@ -23,6 +48,46 @@
     "source": "maintenance_manual.md",
     "chunk_id": 4,
     "text": "_last_90d) before deadline. Check battery SOC, ground straps, and CAN bus logs.\n\n## Cooling\nCooling system failures cluster in high ambient temperature seasons.\nIf component_age_days > 900 and system_failures_last_30d > 0, flush and pressure-test before next mission.\n\n## Hydraulics / Suspension\nHydraulic leaks reduce readiness faster than raw failure counts suggest.\nAny active leak plus maintenance_actions_last_90d == 0 is a readiness red flag."
+  },
+  {
+    "source": "mv22_pmi_guidance.md",
+    "chunk_id": 0,
+    "text": "# MV-22 PMI Production Guidance (Notional \u2014 Demo Only)\n\n## Purpose\nThis document is synthetic guidance for a Fleet Readiness Center East (FRCE) MV-22\nPlanned Maintenance Interval (PMI) pilot demonstration. It is not official NAVAIR tech data."
+  },
+  {
+    "source": "mv22_pmi_guidance.md",
+    "chunk_id": 1,
+    "text": "enance Interval (PMI) pilot demonstration. It is not official NAVAIR tech data.\n\n## Work-package build\nBefore induction, planners should review the BUNO's squadron maintenance history for\ncorrosion, wiring, and structural discrepancies. Prior over-and-above (O&A) density on\nsister aircraft in the same squadron is a leading indicator of mid-event re-planning."
+  },
+  {
+    "source": "mv22_pmi_guidance.md",
+    "chunk_id": 2,
+    "text": "aircraft in the same squadron is a leading indicator of mid-event re-planning.\n\n## Delay drivers\n1. Over-and-above \u2014 discrepancies found after disassembly that were not in the planned package.\n2. Awaiting parts (AWP) \u2014 long-lead or zero-balance NSNs discovered at the wrench.\n3. Engineering disposition backlog \u2014 conditions not covered by tech data; work stops until disposition."
+  },
+  {
+    "source": "mv22_pmi_guidance.md",
+    "chunk_id": 3,
+    "text": "on backlog \u2014 conditions not covered by tech data; work stops until disposition.\n\n## Production control actions\n- If predicted PMI overrun risk is AMBER or RED, brief the MV-22 production lead at the next stand-up.\n- Pre-position long-lead parts when zero_balance_hits >= 1 or awp_days_open is trending up mid-event.\n- Do not wait for calendar completion percentage alone; risk models supplement plan vs actual days."
+  },
+  {
+    "source": "namp_tech_data_excerpts.md",
+    "chunk_id": 0,
+    "text": "# NAMP / Tech Data Excerpts (Notional \u2014 Demo Only)\n\n## Traceability\nUnder the Naval Aviation Maintenance Program (NAMP), all maintenance actions must be\ntraceable to authoritative technical data. Generative AI outputs in this pilot are\nadvisory decision support only and must cite retrieved sources. Maintainers and engineers\nretain final authority."
+  },
+  {
+    "source": "namp_tech_data_excerpts.md",
+    "chunk_id": 1,
+    "text": "must cite retrieved sources. Maintainers and engineers\nretain final authority.\n\n## Wiring and corrosion\nIntermittent wiring discrepancies and corrosion findings frequently drive MV-22 O&A growth\nduring PMI. When squadron_corr_wiring_score is elevated, expand inspection hours in the\naffected zones during work-package build rather than discovering them post-teardown."
+  },
+  {
+    "source": "namp_tech_data_excerpts.md",
+    "chunk_id": 2,
+    "text": "ted zones during work-package build rather than discovering them post-teardown.\n\n## Hydraulics and drive system\nHydraulic leaks and drive-system seal kits are common AWP drivers. If a critical NSN is\nzero-balance, open or expedite the requisition at package build. Cannibalization decisions\nrequire production controller and material expediter concurrence."
+  },
+  {
+    "source": "namp_tech_data_excerpts.md",
+    "chunk_id": 3,
+    "text": "ion decisions\nrequire production controller and material expediter concurrence.\n\n## Structure\nStructural discrepancies not covered by existing repair limits require an engineering\nrequest. Search the local disposition archive for similar zone/defect patterns before\nopening a duplicate request."
   },
   {
     "source": "preventive_maintenance_guide.md",

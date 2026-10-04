@@ -3,6 +3,7 @@
 from fastapi.testclient import TestClient
 
 from predictive_maintenance.api import app
+from predictive_maintenance.config import FEATURE_COLUMNS
 
 client = TestClient(app)
 
@@ -16,4 +17,6 @@ def test_health():
 def test_features():
     resp = client.get("/features")
     assert resp.status_code == 200
-    assert "component_age_days" in resp.json()["feature_columns"]
+    cols = resp.json()["feature_columns"]
+    assert "prior_oa_findings" in cols
+    assert cols == FEATURE_COLUMNS

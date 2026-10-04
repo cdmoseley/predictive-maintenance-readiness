@@ -1,4 +1,4 @@
-"""Agent tools for the maintenance advisor."""
+"""Agent tools for the FRCE MV-22 PMI advisor."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ from typing import Any
 
 import pandas as pd
 
-from predictive_maintenance.config import RAW_DIR
+from predictive_maintenance.config import FEATURE_COLUMNS, RAW_DIR
 from predictive_maintenance.ml.inference import FailureRiskModel, load_scored_fleet
 from predictive_maintenance.rag.index import MaintenanceRAG
 
@@ -15,6 +15,16 @@ from predictive_maintenance.rag.index import MaintenanceRAG
 @lru_cache(maxsize=1)
 def _history() -> pd.DataFrame:
     path = RAW_DIR / "component_history.csv"
+    if not path.exists():
+        from predictive_maintenance.data.generate import main as gen_main
+
+        gen_main()
+    return pd.read_csv(path)
+
+
+@lru_cache(maxsize=1)
+def _parts() -> pd.DataFrame:
+    path = RAW_DIR / "parts_awp.csv"
     if not path.exists():
         from predictive_maintenance.data.generate import main as gen_main
 
@@ -32,57 +42,64 @@ def _rag() -> MaintenanceRAG:
     return MaintenanceRAG()
 
 
-def get_vehicle_health(vehicle_id: str) -> dict[str, Any]:
-    """Return scored health for all components on a vehicle."""
+def get_aircraft_health(buno: str) -> dict[str, Any]:
+    """Return scored PMI health / overrun risk for a BUNO."""
     fleet = load_scored_fleet()
-    rows = fleet[fleet["vehicle_id"] == vehicle_id]
+    id_col = "buno" if "buno" in fleet.columns else "vehicle_id"
+    rows = fleet[fleet[id_col].astype(str) == str(buno)]
     if rows.empty:
-        return {"error": f"Unknown vehicle_id: {vehicle_id}", "vehicle_id": vehicle_id}
+        return {"error": f"Unknown BUNO: {buno}", "buno": buno}
+    row = rows.iloc[0]
     model = _model()
-    components = []
-    for _, row in rows.iterrows():
-        pred = model.predict(row[model.feature_columns].to_dict())
-        components.append(
-            {
-                "component": row["component"],
-                "failure_risk": float(row.get("failure_risk", pred["failure_risk"])),
-                "risk_band": row.get("risk_band", pred["risk_band"]),
-                "recommended_action": row.get("recommended_action", pred["recommended_action"]),
-                "operating_hours": float(row["operating_hours"]),
-                "failures_last_90d": int(row["failures_last_90d"]),
-                "contributing_signals": pred["contributing_signals"][:3],
-            }
-        )
-    worst = max(components, key=lambda c: c["failure_risk"])
+    feats = {c: float(row[c]) for c in model.feature_columns if c in row}
+    pred = model.predict(feats)
     return {
-        "vehicle_id": vehicle_id,
-        "vehicle_type": rows.iloc[0]["vehicle_type"],
-        "unit": rows.iloc[0]["unit"],
-        "worst_band": worst["risk_band"],
-        "components": components,
+        "buno": str(row.get("buno", buno)),
+        "aircraft_type": row.get("aircraft_type", row.get("vehicle_type", "MV-22")),
+        "squadron": row.get("squadron", row.get("unit", "")),
+        "status": row.get("status", ""),
+        "primary_delay_driver": row.get("primary_delay_driver", ""),
+        "focus_system": row.get("focus_system", row.get("component", "")),
+        "overrun_risk": float(row.get("overrun_risk", pred["overrun_risk"])),
+        "risk_band": row.get("risk_band", pred["risk_band"]),
+        "recommended_action": row.get("recommended_action", pred["recommended_action"]),
+        "awp_days_open": float(row.get("awp_days_open", 0)),
+        "eng_queue_age_days": float(row.get("eng_queue_age_days", 0)),
+        "prior_oa_findings": int(row.get("prior_oa_findings", 0)),
+        "open_eng_requests": int(row.get("open_eng_requests", 0)),
+        "planned_turnaround_days": float(row.get("planned_turnaround_days", 0)),
+        "projected_days": float(row.get("projected_days", 0)),
+        "pct_work_complete": float(row.get("pct_work_complete", 0)),
+        "contributing_signals": pred["contributing_signals"][:5],
+        "features": {c: float(row[c]) for c in FEATURE_COLUMNS if c in row},
     }
 
 
-def get_component_history(vehicle_id: str, component: str | None = None) -> dict[str, Any]:
-    """Return recent maintenance / fault events for a vehicle (optional component filter)."""
-    hist = _history()
-    mask = hist["vehicle_id"] == vehicle_id
-    if component:
-        mask &= hist["component"] == component
-    subset = hist.loc[mask].sort_values("days_ago")
+def get_parts_awp_status(buno: str) -> dict[str, Any]:
+    """Return notional parts / AWP status for a BUNO."""
+    parts = _parts()
+    subset = parts[parts["buno"].astype(str) == str(buno)]
     if subset.empty:
         return {
-            "vehicle_id": vehicle_id,
-            "component": component,
-            "events": [],
-            "message": "No history found",
+            "buno": buno,
+            "parts": [],
+            "awp_count": 0,
+            "message": "No parts rows on file",
         }
-    events = subset.head(12).to_dict(orient="records")
-    return {"vehicle_id": vehicle_id, "component": component, "events": events}
+    records = subset.to_dict(orient="records")
+    awp_count = int(subset["awp_flag"].sum()) if "awp_flag" in subset.columns else 0
+    return {
+        "buno": buno,
+        "awp_count": awp_count,
+        "zero_balance_count": int(subset["zero_balance"].sum())
+        if "zero_balance" in subset.columns
+        else 0,
+        "parts": records,
+    }
 
 
-def search_maintenance_manual(query: str, k: int = 4) -> dict[str, Any]:
-    """RAG search over synthetic maintenance docs."""
+def search_tech_data(query: str, k: int = 4) -> dict[str, Any]:
+    """RAG search over notional tech data / disposition archive / PMI guidance."""
     hits = _rag().search(query, k=k)
     return {
         "query": query,
@@ -98,7 +115,62 @@ def search_maintenance_manual(query: str, k: int = 4) -> dict[str, Any]:
     }
 
 
+# Back-compat aliases used by older tests / API paths
+def get_vehicle_health(vehicle_id: str) -> dict[str, Any]:
+    result = get_aircraft_health(vehicle_id)
+    if "error" not in result:
+        result["vehicle_id"] = result["buno"]
+        result["vehicle_type"] = result.get("aircraft_type")
+        result["unit"] = result.get("squadron")
+        result["worst_band"] = result.get("risk_band")
+        result["components"] = [
+            {
+                "component": result.get("focus_system"),
+                "failure_risk": result.get("overrun_risk"),
+                "risk_band": result.get("risk_band"),
+                "recommended_action": result.get("recommended_action"),
+                "operating_hours": result.get("days_in_pmi", 0)
+                if "days_in_pmi" in result
+                else result.get("planned_turnaround_days", 0),
+                "failures_last_90d": result.get("prior_oa_findings", 0),
+                "contributing_signals": result.get("contributing_signals", []),
+            }
+        ]
+    return result
+
+
+def get_component_history(vehicle_id: str, component: str | None = None) -> dict[str, Any]:
+    hist = _history()
+    id_col = "buno" if "buno" in hist.columns else "vehicle_id"
+    mask = hist[id_col].astype(str) == str(vehicle_id)
+    if component and "component" in hist.columns:
+        mask &= hist["component"] == component
+    subset = hist.loc[mask].sort_values("days_ago")
+    if subset.empty:
+        return {
+            "buno": vehicle_id,
+            "vehicle_id": vehicle_id,
+            "component": component,
+            "events": [],
+            "message": "No history found",
+        }
+    events = subset.head(12).to_dict(orient="records")
+    return {
+        "buno": vehicle_id,
+        "vehicle_id": vehicle_id,
+        "component": component,
+        "events": events,
+    }
+
+
+def search_maintenance_manual(query: str, k: int = 4) -> dict[str, Any]:
+    return search_tech_data(query, k=k)
+
+
 TOOLS = {
+    "get_aircraft_health": get_aircraft_health,
+    "get_parts_awp_status": get_parts_awp_status,
+    "search_tech_data": search_tech_data,
     "get_vehicle_health": get_vehicle_health,
     "get_component_history": get_component_history,
     "search_maintenance_manual": search_maintenance_manual,

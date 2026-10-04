@@ -1,0 +1,94 @@
+buno,nsn,nomenclature,qty_required,qty_on_hand,lead_time_days,zero_balance,awp_flag,requisition_status,shop
+168200,1680-01-56189,Corrosion repair patch kit,3,2,3,0,1,AWP,Avionics
+168200,1680-01-56189,Proprotor hub seal kit,2,5,30,0,0,Filled,Power Plants
+168200,1680-01-56189,Corrosion repair patch kit,1,2,60,0,0,In transit,Hydraulics
+168201,1680-01-89909,Drive shaft coupling,1,1,60,0,0,Filled,Structures
+168201,1680-01-89909,Hydraulic pump,2,0,30,1,1,AWP,Structures
+168201,1680-01-89909,Drive shaft coupling,3,2,7,0,1,AWP,Avionics
+168202,1680-01-27517,Corrosion repair patch kit,1,0,7,1,1,AWP,Structures
+168202,1680-01-27517,Hydraulic pump,1,0,14,1,1,AWP,Structures
+168202,1680-01-27517,Drive shaft coupling,1,2,30,0,0,In transit,Hydraulics
+168203,1680-01-52259,Proprotor hub seal kit,3,0,30,1,1,AWP,Hydraulics
+168203,1680-01-52259,Proprotor hub seal kit,1,0,90,1,1,AWP,Hydraulics
+168203,1680-01-52259,Drive shaft coupling,2,1,90,0,1,AWP,Hydraulics
+168204,1680-01-82427,Wire harness assembly,1,5,60,0,0,In transit,Power Plants
+168204,1680-01-82427,Wire harness assembly,2,0,30,1,1,AWP,Power Plants
+168205,1680-01-52440,Hydraulic pump,2,2,30,0,0,Filled,Power Plants
+168206,1680-01-90830,Avionics LRU mount,2,0,14,1,1,AWP,Power Plants
+168207,1680-01-34889,Wire harness assembly,3,1,60,0,1,AWP,Power Plants
+168207,1680-01-34889,Corrosion repair patch kit,3,1,30,0,1,AWP,Avionics
+168207,1680-01-34889,Corrosion repair patch kit,3,0,14,1,1,AWP,Power Plants
+168208,1680-01-99648,Drive shaft coupling,3,0,60,1,1,AWP,Avionics
+168209,1680-01-24514,Wire harness assembly,2,0,14,1,1,AWP,Structures
+168209,1680-01-24514,Hydraulic pump,3,1,3,0,1,AWP,Power Plants
+168209,1680-01-24514,Proprotor hub seal kit,2,0,90,1,1,AWP,Structures
+168210,1680-01-17888,Wire harness assembly,1,0,14,1,1,AWP,Structures
+168211,1680-01-81009,Proprotor hub seal kit,1,0,30,1,1,AWP,Power Plants
+168211,1680-01-81009,Drive shaft coupling,1,0,14,1,1,AWP,Avionics
+168211,1680-01-81009,Drive shaft coupling,1,0,60,1,1,AWP,Structures
+168212,1680-01-51688,Avionics LRU mount,1,5,90,0,0,Filled,Structures
+168212,1680-01-51688,Hydraulic pump,3,0,14,1,1,AWP,Hydraulics
+168212,1680-01-51688,Proprotor hub seal kit,2,0,14,1,1,AWP,Structures
+168213,1680-01-47422,Wire harness assembly,2,0,7,1,1,AWP,Hydraulics
+168214,1680-01-99070,Drive shaft coupling,1,0,3,1,1,AWP,Power Plants
+168214,1680-01-99070,Wire harness assembly,2,0,60,1,1,AWP,Structures
+168214,1680-01-99070,Hydraulic pump,3,0,60,1,1,AWP,Avionics
+168215,1680-01-70400,Proprotor hub seal kit,3,2,30,0,1,AWP,Power Plants
+168216,1680-01-42730,Drive shaft coupling,2,1,30,0,1,AWP,Structures
+168216,1680-01-42730,Proprotor hub seal kit,1,1,90,0,0,Filled,Hydraulics
+168217,1680-01-26750,Hydraulic pump,2,0,90,1,1,AWP,Power Plants
+168217,1680-01-61381,Hydraulic pump,3,1,90,0,1,AWP,Hydraulics
+168218,1680-01-51402,Hydraulic pump,3,0,3,1,1,AWP,Structures
+168218,1680-01-51402,Avionics LRU mount,2,1,90,0,1,AWP,Avionics
+168218,1680-01-51402,Proprotor hub seal kit,3,5,14,0,0,In transit,Structures
+168219,1680-01-36891,Wire harness assembly,3,5,14,0,0,In transit,Structures
+168220,1680-01-79480,Hydraulic pump,1,5,30,0,0,In transit,Power Plants
+168220,1680-01-79480,Proprotor hub seal kit,2,5,7,0,0,In transit,Power Plants
+168221,1680-01-50640,Proprotor hub seal kit,2,0,30,1,1,AWP,Avionics
+168222,1680-01-97463,Proprotor hub seal kit,1,5,3,0,0,Filled,Structures
+168222,1680-01-97463,Proprotor hub seal kit,3,1,14,0,1,AWP,Hydraulics
+168223,1680-01-68847,Proprotor hub seal kit,2,1,30,0,1,AWP,Structures
+168224,1680-01-29936,Avionics LRU mount,3,2,14,0,1,AWP,Structures
+168225,1680-01-12237,Avionics LRU mount,2,5,7,0,0,In transit,Avionics
+168225,1680-01-12237,Corrosion repair patch kit,1,0,30,1,1,AWP,Power Plants
+168226,1680-01-82391,Wire harness assembly,2,0,90,1,1,AWP,Structures
+168227,1680-01-41436,Hydraulic pump,1,0,60,1,1,AWP,Power Plants
+168227,1680-01-93754,Corrosion repair patch kit,2,0,30,1,1,AWP,Hydraulics
+168228,1680-01-55889,Avionics LRU mount,3,0,30,1,1,AWP,Power Plants
+168228,1680-01-68646,Corrosion repair patch kit,1,0,7,1,1,AWP,Avionics
+168228,1680-01-45323,Corrosion repair patch kit,1,5,7,0,0,In transit,Avionics
+168229,1680-01-27306,Proprotor hub seal kit,1,0,90,1,1,AWP,Avionics
+168229,1680-01-27306,Wire harness assembly,1,1,3,0,0,Filled,Avionics
+168230,1680-01-11903,Hydraulic pump,2,0,7,1,1,AWP,Power Plants
+168231,1680-01-88749,Hydraulic pump,3,0,3,1,1,AWP,Hydraulics
+168231,1680-01-88749,Wire harness assembly,2,5,14,0,0,In transit,Hydraulics
+168232,1680-01-14812,Proprotor hub seal kit,3,2,90,0,1,AWP,Avionics
+168232,1680-01-65048,Drive shaft coupling,2,0,90,1,1,AWP,Hydraulics
+168232,1680-01-39615,Avionics LRU mount,1,0,30,1,1,AWP,Avionics
+168233,1680-01-82140,Proprotor hub seal kit,3,0,14,1,1,AWP,Hydraulics
+168234,1680-01-56279,Corrosion repair patch kit,3,0,14,1,1,AWP,Avionics
+168235,1680-01-64375,Corrosion repair patch kit,1,1,30,0,0,Filled,Power Plants
+168235,1680-01-64375,Corrosion repair patch kit,2,5,3,0,0,Filled,Power Plants
+168236,1680-01-92470,Avionics LRU mount,3,0,60,1,1,AWP,Structures
+168237,1680-01-35933,Proprotor hub seal kit,3,1,3,0,1,AWP,Structures
+168237,1680-01-35933,Wire harness assembly,2,0,60,1,1,AWP,Hydraulics
+168237,1680-01-35933,Hydraulic pump,1,1,30,0,0,In transit,Avionics
+168238,1680-01-94233,Drive shaft coupling,3,2,30,0,1,AWP,Avionics
+168238,1680-01-94233,Wire harness assembly,3,0,30,1,1,AWP,Power Plants
+168239,1680-01-63106,Drive shaft coupling,1,0,90,1,1,AWP,Hydraulics
+168239,1680-01-63106,Hydraulic pump,1,0,7,1,1,AWP,Structures
+168239,1680-01-63106,Proprotor hub seal kit,2,1,7,0,1,AWP,Power Plants
+168240,1680-01-54293,Hydraulic pump,2,1,90,0,1,AWP,Power Plants
+168241,1680-01-28743,Proprotor hub seal kit,3,0,90,1,1,AWP,Power Plants
+168242,1680-01-17763,Corrosion repair patch kit,3,0,30,1,1,AWP,Structures
+168242,1680-01-17763,Hydraulic pump,3,1,7,0,1,AWP,Structures
+168242,1680-01-17763,Wire harness assembly,1,2,7,0,0,In transit,Hydraulics
+168243,1680-01-68671,Drive shaft coupling,1,5,14,0,0,Filled,Power Plants
+168243,1680-01-68671,Hydraulic pump,1,5,30,0,0,Filled,Power Plants
+168244,1680-01-59005,Corrosion repair patch kit,2,0,14,1,1,AWP,Power Plants
+168245,1680-01-80315,Proprotor hub seal kit,1,2,3,0,0,Filled,Structures
+168245,1680-01-80315,Avionics LRU mount,3,2,14,0,1,AWP,Hydraulics
+168245,1680-01-80315,Drive shaft coupling,2,5,3,0,0,In transit,Structures
+168246,1680-01-90732,Proprotor hub seal kit,2,2,3,0,0,Filled,Hydraulics
+168247,1680-01-10492,Hydraulic pump,3,0,14,1,1,AWP,Structures
+168247,1680-01-10492,Avionics LRU mount,2,1,90,0,1,AWP,Avionics

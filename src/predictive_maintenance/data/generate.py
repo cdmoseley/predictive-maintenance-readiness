@@ -1,4 +1,4 @@
-"""Generate synthetic fleet maintenance records for the demo."""
+"""Generate synthetic MV-22 PMI line data for the FRCE pilot demo."""
 
 from __future__ import annotations
 
@@ -9,11 +9,14 @@ import numpy as np
 import pandas as pd
 
 from predictive_maintenance.config import (
-    COMPONENTS,
+    AIRCRAFT_TYPE,
+    DELAY_DRIVERS,
+    DOCS_DIR,
     FEATURE_COLUMNS,
     RAW_DIR,
+    SQUADRONS,
+    SYSTEMS,
     TARGET_COLUMN,
-    VEHICLE_TYPES,
 )
 
 
@@ -21,178 +24,277 @@ def _sigmoid(x: np.ndarray) -> np.ndarray:
     return 1.0 / (1.0 + np.exp(-x))
 
 
-def generate_fleet_data(
-    n_vehicles: int = 120,
+def generate_pmi_line(
+    n_aircraft: int = 48,
     seed: int = 42,
 ) -> pd.DataFrame:
-    """Create one row per vehicle/component with a latent failure risk."""
+    """One row per BUNO currently (or recently) in MV-22 PMI."""
     rng = np.random.default_rng(seed)
     rows: list[dict] = []
 
-    for i in range(n_vehicles):
-        vehicle_id = f"V-{1000 + i}"
-        vehicle_type = VEHICLE_TYPES[i % len(VEHICLE_TYPES)]
-        # Each vehicle has 1–3 monitored components
-        n_components = int(rng.integers(1, 4))
-        comps = rng.choice(COMPONENTS, size=n_components, replace=False)
+    for i in range(n_aircraft):
+        buno = f"16{8200 + i}"  # notional Bureau Numbers
+        squadron = SQUADRONS[i % len(SQUADRONS)]
+        planned = float(rng.choice([90, 100, 110, 120, 130]))
+        days_in = float(rng.integers(10, int(planned) + 25))
+        pct_complete = float(np.clip(days_in / planned + rng.normal(0, 0.08), 0.05, 0.98))
 
-        for component in comps:
-            age = float(rng.integers(60, 1600))
-            hours = float(rng.integers(80, 5500))
-            # Prefer mostly healthy recent history
-            failures_90 = int(rng.choice([0, 0, 0, 0, 1, 1, 2, 3]))
-            fleet_same = int(rng.integers(0, 8))
-            system_30 = int(rng.choice([0, 0, 0, 0, 1, 1, 2]))
-            maint_90 = int(rng.integers(0, 5))
+        prior_oa = int(rng.choice([0, 0, 1, 1, 2, 3, 4, 5]))
+        corr_wiring = float(np.clip(rng.normal(prior_oa * 0.8 + 1.5, 1.2), 0, 10))
+        awp_days = float(rng.choice([0, 0, 0, 2, 5, 8, 12, 18, 25]))
+        zero_bal = int(rng.choice([0, 0, 0, 1, 1, 2, 3]))
+        eng_age = float(rng.choice([0, 0, 0, 1, 3, 5, 8, 12, 20]))
+        prior_late = int(rng.choice([0, 0, 0, 1, 1, 2]))
+        open_eng = int(0 if eng_age == 0 else rng.integers(1, 4))
 
-            # Strong linear signal; base rate ~18–22%
-            logit = (
-                -3.4
-                + 0.0015 * (age - 400)
-                + 0.0004 * (hours - 1200)
-                + 0.95 * failures_90
-                + 0.15 * fleet_same
-                + 0.85 * system_30
-                - 0.50 * maint_90
-                + rng.normal(0, 0.2)
-            )
-            p = float(_sigmoid(np.array([logit]))[0])
-            failed = int(rng.random() < p)
+        # Latent overrun risk — O&A history, AWP, eng queue dominate
+        logit = (
+            -2.8
+            + 0.45 * prior_oa
+            + 0.22 * corr_wiring
+            + 0.09 * awp_days
+            + 0.55 * zero_bal
+            + 0.12 * eng_age
+            + 0.70 * prior_late
+            - 0.015 * (planned - 100)
+            - 1.2 * pct_complete
+            + rng.normal(0, 0.25)
+        )
+        p = float(_sigmoid(np.array([logit]))[0])
+        overrun = int(rng.random() < p)
 
-            readiness = max(0.05, min(0.98, 1.0 - p + rng.normal(0, 0.05)))
-            rows.append(
-                {
-                    "vehicle_id": vehicle_id,
-                    "vehicle_type": vehicle_type,
-                    "component": component,
-                    "component_age_days": age,
-                    "operating_hours": hours,
-                    "failures_last_90d": failures_90,
-                    "fleet_same_component_failures_90d": fleet_same,
-                    "system_failures_last_30d": system_30,
-                    "maintenance_actions_last_90d": maint_90,
-                    TARGET_COLUMN: failed,
-                    "true_risk": round(p, 4),
-                    "readiness_score": round(float(readiness), 4),
-                    "unit": f"Unit-{(i % 8) + 1}",
-                    "last_service_days_ago": int(rng.integers(5, 220)),
-                }
-            )
+        # Primary delay driver from which signal is loudest
+        driver_scores = {
+            "Over-and-above": prior_oa * 1.2 + corr_wiring * 0.4,
+            "AWP": awp_days * 0.5 + zero_bal * 2.0,
+            "Engineering": eng_age * 0.8 + open_eng * 1.5,
+            "On-plan": 1.5 if p < 0.25 else 0.2,
+        }
+        primary = max(driver_scores, key=driver_scores.get)
+        if primary not in DELAY_DRIVERS:
+            primary = "On-plan"
+
+        projected = planned * (1.0 + max(0.0, p - 0.15))
+        if overrun:
+            projected = max(projected, planned * 1.15)
+
+        status = "In work"
+        if awp_days >= 8 and primary == "AWP":
+            status = "AWP hold"
+        elif eng_age >= 5 and primary == "Engineering":
+            status = "Eng disposition hold"
+        elif pct_complete > 0.9:
+            status = "Final ops"
+
+        focus_system = str(rng.choice(SYSTEMS))
+        critical_nsn = f"1680-01-{rng.integers(10000, 99999)}" if zero_bal or awp_days else ""
+
+        rows.append(
+            {
+                "buno": buno,
+                "aircraft_type": AIRCRAFT_TYPE,
+                "squadron": squadron,
+                "pmi_event_id": f"PMI-MV22-{2026}-{100 + i}",
+                "status": status,
+                "primary_delay_driver": primary,
+                "focus_system": focus_system,
+                "critical_nsn": critical_nsn,
+                "days_in_pmi": round(days_in, 1),
+                "projected_days": round(float(projected), 1),
+                "open_eng_requests": open_eng,
+                "prior_oa_findings": prior_oa,
+                "squadron_corr_wiring_score": round(corr_wiring, 2),
+                "awp_days_open": awp_days,
+                "zero_balance_hits": zero_bal,
+                "eng_queue_age_days": eng_age,
+                "prior_late_pmis": prior_late,
+                "planned_turnaround_days": planned,
+                "pct_work_complete": round(pct_complete, 3),
+                TARGET_COLUMN: overrun,
+                "true_risk": round(p, 4),
+                # legacy aliases so older helpers keep working during retarget
+                "vehicle_id": buno,
+                "vehicle_type": AIRCRAFT_TYPE,
+                "unit": squadron,
+                "component": focus_system,
+            }
+        )
 
     return pd.DataFrame(rows)
+
+
+# Back-compat name used by tests / scripts
+def generate_fleet_data(n_vehicles: int = 48, seed: int = 42) -> pd.DataFrame:
+    return generate_pmi_line(n_aircraft=n_vehicles, seed=seed)
 
 
 def generate_component_history(
     fleet: pd.DataFrame,
     seed: int = 42,
 ) -> pd.DataFrame:
-    """Synthetic event history for agent tool `get_component_history`."""
+    """Synthetic squadron / depot event history for agent tools."""
     rng = np.random.default_rng(seed + 7)
     events: list[dict] = []
     event_types = [
-        "inspection",
-        "corrective_repair",
-        "preventive_service",
-        "parts_replacement",
-        "oil_analysis",
-        "fault_code",
+        "squadron_discrepancy",
+        "oa_finding",
+        "parts_requisition",
+        "awp_stoppage",
+        "eng_request",
+        "disposition_closed",
+        "pmi_inspection",
     ]
     for _, row in fleet.iterrows():
-        n_events = int(rng.integers(2, 7))
-        for j in range(n_events):
-            days_ago = int(rng.integers(1, 180))
+        n_events = int(rng.integers(3, 8))
+        for _ in range(n_events):
+            days_ago = int(rng.integers(1, 400))
+            et = str(rng.choice(event_types))
             events.append(
                 {
-                    "vehicle_id": row["vehicle_id"],
-                    "component": row["component"],
-                    "event_type": rng.choice(event_types),
+                    "buno": row["buno"],
+                    "vehicle_id": row["buno"],
+                    "component": row["focus_system"],
+                    "system": row["focus_system"],
+                    "event_type": et,
                     "days_ago": days_ago,
-                    "notes": _event_note(row["component"], days_ago, rng),
-                    "severity_hours": max(0, int(row["operating_hours"] - days_ago * 4)),
+                    "notes": _event_note(row["buno"], row["focus_system"], et, days_ago, rng),
+                    "nsn": row["critical_nsn"] or f"1680-01-{rng.integers(10000, 99999)}",
                 }
             )
-    return pd.DataFrame(events).sort_values(["vehicle_id", "days_ago"])
+    return pd.DataFrame(events).sort_values(["buno", "days_ago"])
 
 
-def _event_note(component: str, days_ago: int, rng: np.random.Generator) -> str:
-    templates = [
-        f"{component} inspection — wear within limits ({days_ago}d ago)",
-        f"{component} fault cleared after service ({days_ago}d ago)",
-        f"Deferred {component} work pending parts ({days_ago}d ago)",
-        f"Elevated {component} temperature recorded ({days_ago}d ago)",
-        f"Scheduled {component} PM completed ({days_ago}d ago)",
-    ]
-    return str(rng.choice(templates))
+def generate_parts_awp(fleet: pd.DataFrame, seed: int = 42) -> pd.DataFrame:
+    """Notional AWP / parts rows for get_parts_awp_status."""
+    rng = np.random.default_rng(seed + 11)
+    rows: list[dict] = []
+    for _, row in fleet.iterrows():
+        n_parts = int(rng.integers(1, 4))
+        for j in range(n_parts):
+            lead = int(rng.choice([3, 7, 14, 30, 60, 90]))
+            on_hand = int(rng.choice([0, 0, 0, 1, 2, 5]))
+            qty_req = int(rng.integers(1, 4))
+            awp = on_hand < qty_req
+            rows.append(
+                {
+                    "buno": row["buno"],
+                    "nsn": row["critical_nsn"] or f"1680-01-{rng.integers(10000, 99999)}",
+                    "nomenclature": str(
+                        rng.choice(
+                            [
+                                "Proprotor hub seal kit",
+                                "Wire harness assembly",
+                                "Hydraulic pump",
+                                "Avionics LRU mount",
+                                "Corrosion repair patch kit",
+                                "Drive shaft coupling",
+                            ]
+                        )
+                    ),
+                    "qty_required": qty_req,
+                    "qty_on_hand": on_hand,
+                    "lead_time_days": lead,
+                    "zero_balance": int(on_hand == 0),
+                    "awp_flag": int(awp),
+                    "requisition_status": "AWP" if awp else str(rng.choice(["Filled", "In transit"])),
+                    "shop": str(rng.choice(["Structures", "Avionics", "Power Plants", "Hydraulics"])),
+                }
+            )
+    return pd.DataFrame(rows)
+
+
+def _event_note(
+    buno: str,
+    system: str,
+    event_type: str,
+    days_ago: int,
+    rng: np.random.Generator,
+) -> str:
+    templates = {
+        "squadron_discrepancy": f"{buno} squadron write-up on {system} ({days_ago}d ago)",
+        "oa_finding": f"O&A finding during PMI teardown — {system} ({days_ago}d ago)",
+        "parts_requisition": f"Requisition opened for {system} support parts ({days_ago}d ago)",
+        "awp_stoppage": f"Work stoppage AWP — {system} ({days_ago}d ago)",
+        "eng_request": f"Engineering request submitted — condition not in tech data ({days_ago}d ago)",
+        "disposition_closed": f"Prior disposition closed for similar {system} condition ({days_ago}d ago)",
+        "pmi_inspection": f"PMI inspection complete on {system} ({days_ago}d ago)",
+    }
+    return templates.get(event_type, f"{event_type} on {system} ({days_ago}d ago)")
 
 
 def write_synthetic_docs(docs_dir: Path) -> list[Path]:
-    """Small corpus for RAG: manual, preventive guide, readiness policy."""
+    """Notional NAMP-aligned tech data, disposition archive, PMI guidance for RAG."""
     docs_dir.mkdir(parents=True, exist_ok=True)
     documents = {
-        "maintenance_manual.md": """# Fleet Maintenance Manual (Synthetic)
+        "mv22_pmi_guidance.md": """# MV-22 PMI Production Guidance (Notional — Demo Only)
 
-## Engine
-Engine failure risk rises sharply after 4,000 operating hours without a major service.
-Monitor oil analysis trends, coolant temperature, and fault codes EC-12 / EC-44.
-If failures_last_90d >= 2 for the engine, schedule a teardown inspection within 14 days.
+## Purpose
+This document is synthetic guidance for a Fleet Readiness Center East (FRCE) MV-22
+Planned Maintenance Interval (PMI) pilot demonstration. It is not official NAVAIR tech data.
 
-## Transmission
-Transmission slip and delayed engagement often precede hard failures.
-High fleet_same_component_failures_90d for transmissions signals a parts-quality or operating-condition issue —
-cross-check unit training tempo and fluid change intervals.
+## Work-package build
+Before induction, planners should review the BUNO's squadron maintenance history for
+corrosion, wiring, and structural discrepancies. Prior over-and-above (O&A) density on
+sister aircraft in the same squadron is a leading indicator of mid-event re-planning.
 
-## Brakes
-Brake pad life is hours-driven. After 2,500 hours, inspect thickness every 30 days.
-System failures in the last 30 days involving brakes require immediate deadline status until cleared.
+## Delay drivers
+1. Over-and-above — discrepancies found after disassembly that were not in the planned package.
+2. Awaiting parts (AWP) — long-lead or zero-balance NSNs discovered at the wrench.
+3. Engineering disposition backlog — conditions not covered by tech data; work stops until disposition.
 
-## Electrical
-Intermittent electrical faults are high false-positive drivers. Prefer trend confirmation
-(multiple failures_last_90d) before deadline. Check battery SOC, ground straps, and CAN bus logs.
-
-## Cooling
-Cooling system failures cluster in high ambient temperature seasons.
-If component_age_days > 900 and system_failures_last_30d > 0, flush and pressure-test before next mission.
-
-## Hydraulics / Suspension
-Hydraulic leaks reduce readiness faster than raw failure counts suggest.
-Any active leak plus maintenance_actions_last_90d == 0 is a readiness red flag.
+## Production control actions
+- If predicted PMI overrun risk is AMBER or RED, brief the MV-22 production lead at the next stand-up.
+- Pre-position long-lead parts when zero_balance_hits >= 1 or awp_days_open is trending up mid-event.
+- Do not wait for calendar completion percentage alone; risk models supplement plan vs actual days.
 """,
-        "preventive_maintenance_guide.md": """# Preventive Maintenance Guide (Synthetic)
+        "namp_tech_data_excerpts.md": """# NAMP / Tech Data Excerpts (Notional — Demo Only)
 
-## Cadence
-- Daily: fluid levels, tire pressure, fault-code scan
-- Weekly: brake/steering walkaround, coolant concentration
-- 90-day: oil analysis, transmission fluid sample, electrical load test
-- Annual: major component age review vs OEM service life
+## Traceability
+Under the Naval Aviation Maintenance Program (NAMP), all maintenance actions must be
+traceable to authoritative technical data. Generative AI outputs in this pilot are
+advisory decision support only and must cite retrieved sources. Maintainers and engineers
+retain final authority.
 
-## Risk-driven escalation
-When predicted failure probability exceeds the operating threshold (recall-biased, typically ~0.35),
-do not wait for the calendar interval. Pull the vehicle for condition-based maintenance.
+## Wiring and corrosion
+Intermittent wiring discrepancies and corrosion findings frequently drive MV-22 O&A growth
+during PMI. When squadron_corr_wiring_score is elevated, expand inspection hours in the
+affected zones during work-package build rather than discovering them post-teardown.
 
-## Parts and supply
-If fleet_same_component_failures_90d is elevated, pre-position spare parts for that component
-across the battalion before the next field exercise.
+## Hydraulics and drive system
+Hydraulic leaks and drive-system seal kits are common AWP drivers. If a critical NSN is
+zero-balance, open or expedite the requisition at package build. Cannibalization decisions
+require production controller and material expediter concurrence.
 
-## Documentation
-Every corrective action must cite the triggering signal (hours, age, failures, or model score)
-so readiness officers can audit decisions after the mission.
+## Structure
+Structural discrepancies not covered by existing repair limits require an engineering
+request. Search the local disposition archive for similar zone/defect patterns before
+opening a duplicate request.
 """,
-        "readiness_policy.md": """# Unit Readiness Policy (Synthetic)
+        "disposition_archive.md": """# Local Engineering Disposition Archive (Notional — Demo Only)
 
-## Readiness states
-- GREEN: risk < 0.20 and no open deadline faults — fully mission capable
-- AMBER: 0.20 <= risk < 0.50 or deferred non-critical maintenance — limited mission capable
-- RED: risk >= 0.50 or safety-critical open fault — not mission capable
+## DISP-MV22-1042 — Proprotor hub seal weepage
+Condition: Light weepage at proprotor hub seal during PMI, within limited reuse criteria
+after inspection. Disposition: Continue with increased inspection interval; replace seal
+kit if weepage exceeds limit in tech data table. Keywords: proprotor, seal, weepage, PMI.
 
-## Recommended actions
-- GREEN: continue scheduled PM; no special action
-- AMBER: schedule inspection within 7 days; brief commander on contingency
-- RED: deadline vehicle; assign maintenance priority 1; notify readiness officer same day
+## DISP-MV22-1188 — Avionics wire chafing zone 3
+Condition: Chafing on wire harness not explicitly illustrated in IETM figure. Disposition:
+Repair per standard wiring practice; add protective grommet; document as local O&A lesson
+learned for sister BUNOs. Keywords: wiring, chafing, avionics, harness.
 
-## Operating philosophy
-Missed failures cost more than false alarms. Prefer recall over precision at the decision threshold.
-The predictive model is a decision-support signal, not an automatic deadline authority —
-maintainers retain final say after reviewing contributing features and maintenance history.
+## DISP-MV22-1201 — Skin corrosion under fairing
+Condition: Corrosion under fairing beyond blend-out limits in referenced repair. Disposition:
+Install approved patch kit; engineering sign-off required before close. Keywords: corrosion,
+structure, fairing, patch.
+
+## DISP-MV22-1266 — Hydraulic pump case porosity
+Condition: Porosity indication on hydraulic pump case during NDI. Disposition: Remove and
+replace pump; do not blend. Expedite NSN if zero-balance. Keywords: hydraulics, pump, NDI, AWP.
+
+## Reuse policy
+Engineers should search this archive for similar ATA/zone/defect patterns before submitting
+a new request. Cite the prior disposition ID in the new request if requesting confirmation
+or deviation. AI search results are not a substitute for engineer judgment.
 """,
     }
     paths = []
@@ -203,30 +305,33 @@ maintainers retain final say after reviewing contributing features and maintenan
     return paths
 
 
-def main(n_vehicles: int = 120, out_dir: Path | None = None) -> None:
+def main(n_vehicles: int = 48, out_dir: Path | None = None) -> None:
     out = out_dir or RAW_DIR
     out.mkdir(parents=True, exist_ok=True)
 
-    fleet = generate_fleet_data(n_vehicles=n_vehicles)
+    fleet = generate_pmi_line(n_aircraft=n_vehicles)
     history = generate_component_history(fleet)
+    parts = generate_parts_awp(fleet)
+
     fleet_path = out / "fleet_maintenance.csv"
     history_path = out / "component_history.csv"
+    parts_path = out / "parts_awp.csv"
     fleet.to_csv(fleet_path, index=False)
     history.to_csv(history_path, index=False)
-
-    from predictive_maintenance.config import DOCS_DIR
+    parts.to_csv(parts_path, index=False)
 
     doc_paths = write_synthetic_docs(DOCS_DIR)
-    print(f"Wrote {len(fleet)} component rows → {fleet_path}")
+    print(f"Wrote {len(fleet)} BUNO PMI rows → {fleet_path}")
     print(f"Wrote {len(history)} history events → {history_path}")
+    print(f"Wrote {len(parts)} parts/AWP rows → {parts_path}")
     print(f"Wrote {len(doc_paths)} docs → {DOCS_DIR}")
     print(f"Features: {FEATURE_COLUMNS}")
-    print(f"Positive rate: {fleet[TARGET_COLUMN].mean():.2%}")
+    print(f"Overrun rate: {fleet[TARGET_COLUMN].mean():.2%}")
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Generate synthetic maintenance data")
-    parser.add_argument("--n-vehicles", type=int, default=120)
+    parser = argparse.ArgumentParser(description="Generate synthetic MV-22 PMI data")
+    parser.add_argument("--n-vehicles", type=int, default=48)
     parser.add_argument("--out-dir", type=Path, default=None)
     args = parser.parse_args()
     main(n_vehicles=args.n_vehicles, out_dir=args.out_dir)
