@@ -1,4 +1,8 @@
-"""Agent tools for the FRCE MV-22 PMI advisor."""
+"""Agent tools for the FRCE MV-22 PMI advisor.
+
+Heavy deps (ML model / FAISS) are imported lazily so Streamlit Cloud can import
+`search_tech_data` even when xgboost/joblib model load fails at boot.
+"""
 
 from __future__ import annotations
 
@@ -8,8 +12,6 @@ from typing import Any
 import pandas as pd
 
 from predictive_maintenance.config import FEATURE_COLUMNS, RAW_DIR
-from predictive_maintenance.ml.inference import FailureRiskModel, load_scored_fleet
-from predictive_maintenance.rag.index import MaintenanceRAG
 
 
 @lru_cache(maxsize=1)
@@ -33,26 +35,66 @@ def _parts() -> pd.DataFrame:
 
 
 @lru_cache(maxsize=1)
-def _model() -> FailureRiskModel:
+def _model():
+    from predictive_maintenance.ml.inference import FailureRiskModel
+
     return FailureRiskModel()
 
 
 @lru_cache(maxsize=1)
-def _rag() -> MaintenanceRAG:
+def _rag():
+    from predictive_maintenance.rag.index import MaintenanceRAG
+
     return MaintenanceRAG()
 
 
+def _load_scored_fleet() -> pd.DataFrame:
+    from predictive_maintenance.ml.inference import load_scored_fleet
+
+    return load_scored_fleet()
+
+
+def _signals_from_row(row: pd.Series) -> list[dict[str, Any]]:
+    """Heuristic signals from the scored CSV row — no model artifact required."""
+    try:
+        from predictive_maintenance.ml.inference import contributing_signals
+
+        return contributing_signals(row)[:5]
+    except Exception:
+        return []
+
+
 def get_aircraft_health(buno: str) -> dict[str, Any]:
-    """Return scored PMI health / overrun risk for a BUNO."""
-    fleet = load_scored_fleet()
+    """Return scored PMI health / overrun risk for a BUNO.
+
+    Prefers live model prediction when available; falls back to scored CSV +
+    heuristic signals so Cloud boot is not blocked by model load failures.
+    """
+    fleet = _load_scored_fleet()
     id_col = "buno" if "buno" in fleet.columns else "vehicle_id"
     rows = fleet[fleet[id_col].astype(str) == str(buno)]
     if rows.empty:
         return {"error": f"Unknown BUNO: {buno}", "buno": buno}
     row = rows.iloc[0]
-    model = _model()
-    feats = {c: float(row[c]) for c in model.feature_columns if c in row}
-    pred = model.predict(feats)
+
+    overrun = float(row.get("overrun_risk", row.get("failure_risk", 0.0)))
+    band = str(row.get("risk_band", "AMBER"))
+    action = str(row.get("recommended_action", ""))
+    signals = _signals_from_row(row)
+
+    try:
+        model = _model()
+        feats = {c: float(row[c]) for c in model.feature_columns if c in row}
+        if len(feats) == len(model.feature_columns):
+            pred = model.predict(feats)
+            overrun = float(pred["overrun_risk"])
+            band = str(pred["risk_band"])
+            action = str(pred["recommended_action"])
+            signals = pred["contributing_signals"][:5]
+    except Exception:
+        # Model artifact / xgboost unavailable — scored CSV is enough for demo
+        pass
+
     return {
         "buno": str(row.get("buno", buno)),
         "aircraft_type": row.get("aircraft_type", row.get("vehicle_type", "MV-22")),
@@ -60,9 +102,9 @@ def get_aircraft_health(buno: str) -> dict[str, Any]:
         "status": row.get("status", ""),
         "primary_delay_driver": row.get("primary_delay_driver", ""),
         "focus_system": row.get("focus_system", row.get("component", "")),
-        "overrun_risk": float(row.get("overrun_risk", pred["overrun_risk"])),
-        "risk_band": row.get("risk_band", pred["risk_band"]),
-        "recommended_action": row.get("recommended_action", pred["recommended_action"]),
+        "overrun_risk": overrun,
+        "risk_band": band,
+        "recommended_action": action,
         "awp_days_open": float(row.get("awp_days_open", 0)),
         "eng_queue_age_days": float(row.get("eng_queue_age_days", 0)),
         "prior_oa_findings": int(row.get("prior_oa_findings", 0)),
@@ -70,7 +112,7 @@ def get_aircraft_health(buno: str) -> dict[str, Any]:
         "planned_turnaround_days": float(row.get("planned_turnaround_days", 0)),
         "projected_days": float(row.get("projected_days", 0)),
         "pct_work_complete": float(row.get("pct_work_complete", 0)),
-        "contributing_signals": pred["contributing_signals"][:5],
+        "contributing_signals": signals,
         "features": {c: float(row[c]) for c in FEATURE_COLUMNS if c in row},
     }
 
@@ -99,7 +141,10 @@ def get_parts_awp_status(buno: str) -> dict[str, Any]:
 
 
 def search_tech_data(query: str, k: int = 4) -> dict[str, Any]:
-    """RAG search over notional tech data / disposition archive / PMI guidance."""
+    """RAG search over notional tech data / disposition archive / PMI guidance.
+
+    Only needs the RAG stack (numpy; FAISS optional). Does not load the ML model.
+    """
     hits = _rag().search(query, k=k)
     return {
         "query": query,

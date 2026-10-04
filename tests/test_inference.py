@@ -236,3 +236,50 @@ def test_zip_without_strict():
 
     src = inspect.getsource(rag_mod.MaintenanceRAG.search)
     assert "strict=True" not in src
+
+
+def test_tools_module_imports_without_loading_ml(monkeypatch):
+    """Cloud failure mode: tools.py must bind search_tech_data without importing ML."""
+    import importlib
+    import sys
+
+    # Drop cached modules so we can observe fresh imports
+    for name in list(sys.modules):
+        if name.startswith("predictive_maintenance.agent.tools") or name.startswith(
+            "predictive_maintenance.ml"
+        ):
+            sys.modules.pop(name, None)
+
+    import predictive_maintenance.agent.tools as tools_mod
+
+    tools_mod = importlib.reload(tools_mod)
+    assert hasattr(tools_mod, "search_tech_data")
+    assert callable(tools_mod.search_tech_data)
+    # Top-level tools import must not pull FailureRiskModel into sys.modules
+    assert "predictive_maintenance.ml.inference" not in sys.modules
+    assert "predictive_maintenance.ml.train" not in sys.modules
+
+
+def test_search_tech_data_works_with_numpy_fallback(tmp_path, monkeypatch):
+    """Engineer search must work even when FAISS is unavailable."""
+    import predictive_maintenance.rag.index as rag_mod
+
+    docs = tmp_path / "docs"
+    docs.mkdir()
+    (docs / "guide.md").write_text(
+        "# AWP guidance\nZero-balance parts cause PMI delay. Engineering dispositions help.\n",
+        encoding="utf-8",
+    )
+    index_dir = tmp_path / "idx"
+
+    monkeypatch.setattr(rag_mod, "_FAISS", None)
+    monkeypatch.setattr(rag_mod, "_FAISS_TRIED", True)
+
+    info = rag_mod.build_index(docs_dir=docs, index_dir=index_dir)
+    assert info["faiss"] is False
+    assert (index_dir / "vectors.npy").exists()
+
+    rag = rag_mod.MaintenanceRAG(index_dir)
+    hits = rag.search("AWP zero balance parts", k=2)
+    assert hits
+    assert "text" in hits[0]

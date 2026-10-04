@@ -24,10 +24,11 @@ try:
 except Exception:
     pass
 
+# Imports after sys.path bootstrap so Cloud finds `src/predictive_maintenance`
 from predictive_maintenance.agent.advisor import explain_risk, recommend_next_action
 from predictive_maintenance.agent.tools import search_tech_data
-from predictive_maintenance.config import COLUMN_LABELS, feature_label
-from predictive_maintenance.ml.inference import FailureRiskModel, load_scored_fleet
+from predictive_maintenance.config import COLUMN_LABELS, FEATURE_COLUMNS, feature_label
+from predictive_maintenance.ml.inference import contributing_signals, load_scored_fleet
 
 st.set_page_config(
     page_title="FRCE MV-22 PMI Delay Assistant",
@@ -62,8 +63,15 @@ def labeled_frame(df: pd.DataFrame) -> pd.DataFrame:
 
 
 @st.cache_resource
-def get_model() -> FailureRiskModel:
-    return FailureRiskModel()
+def get_model():
+    """Load ML artifact when possible; return None so the app still boots on Cloud."""
+    try:
+        from predictive_maintenance.ml.inference import FailureRiskModel
+
+        return FailureRiskModel()
+    except Exception as exc:  # noqa: BLE001 — Cloud may lack xgboost unpickle deps
+        st.sidebar.warning(f"Live model unavailable — using scored line board. ({exc})")
+        return None
 
 
 @st.cache_data
@@ -76,6 +84,19 @@ def get_line() -> pd.DataFrame:
         df = df.copy()
         df["overrun_risk"] = df["failure_risk"]
     return df
+
+
+def _signals_for_row(row: pd.Series, model) -> list[dict]:
+    if model is not None:
+        try:
+            feats = {c: float(row[c]) for c in model.feature_columns}
+            return model.predict(feats)["contributing_signals"]
+        except Exception:
+            pass
+    try:
+        return contributing_signals(row[FEATURE_COLUMNS])
+    except Exception:
+        return []
 
 
 def main() -> None:
@@ -116,7 +137,7 @@ def main() -> None:
         render_engineer(line, model)
 
 
-def render_planner(line: pd.DataFrame, model: FailureRiskModel) -> None:
+def render_planner(line: pd.DataFrame, model) -> None:
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("BUNOs on line", line["buno"].nunique())
     c2.metric("RED (likely late)", int((line["risk_band"] == "RED").sum()))
@@ -215,10 +236,10 @@ def render_planner(line: pd.DataFrame, model: FailureRiskModel) -> None:
     d2.metric(feature_label("awp_days_open"), f"{row.get('awp_days_open', 0):.0f}")
     d3.metric(feature_label("eng_queue_age_days"), f"{row.get('eng_queue_age_days', 0):.0f}")
 
-    prediction = model.predict({c: float(row[c]) for c in model.feature_columns})
+    prediction_signals = _signals_for_row(row, model)
     st.markdown("#### Contributing signals")
     st.dataframe(
-        labeled_frame(pd.DataFrame(prediction["contributing_signals"])),
+        labeled_frame(pd.DataFrame(prediction_signals)),
         use_container_width=True,
         hide_index=True,
     )
@@ -258,7 +279,7 @@ def render_planner(line: pd.DataFrame, model: FailureRiskModel) -> None:
             st.caption(f"Sources: {src_lbl}")
 
 
-def render_engineer(line: pd.DataFrame, model: FailureRiskModel) -> None:
+def render_engineer(line: pd.DataFrame, model) -> None:
     st.subheader("Engineering disposition workstation")
     st.markdown(
         "Search notional tech data and the local disposition archive for similar "
