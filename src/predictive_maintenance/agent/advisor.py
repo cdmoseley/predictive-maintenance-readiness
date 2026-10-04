@@ -12,6 +12,7 @@ from predictive_maintenance.agent.tools import (
     get_parts_awp_status,
     search_tech_data,
 )
+from predictive_maintenance.config import feature_label
 
 
 def recommend_next_action(buno: str, component: str | None = None) -> dict[str, Any]:
@@ -63,7 +64,8 @@ def explain_risk(buno: str, component: str | None = None) -> dict[str, Any]:
 
     focus = component or health.get("focus_system") or "structure"
     signals = ", ".join(
-        f"{s['feature']}={s['value']}" for s in health.get("contributing_signals", [])[:4]
+        f"{feature_label(s['feature'])}={s['value']}"
+        for s in health.get("contributing_signals", [])[:4]
     )
     query = (
         f"Explain PMI overrun risk for MV-22 BUNO {buno} system {focus}. "
@@ -111,9 +113,9 @@ def _mock_recommend(buno: str, component: str, payload: dict) -> str:
         f"(overrun risk {health['overrun_risk']:.0%})\n"
         f"- Primary delay driver: **{health.get('primary_delay_driver')}**\n"
         f"- Action: {health['recommended_action']}\n"
-        f"- AWP lines open: {awp_count}; eng queue age: "
-        f"{health.get('eng_queue_age_days')}d; prior O&A: "
-        f"{health.get('prior_oa_findings')}\n"
+        f"- AWP lines open: {awp_count}; "
+        f"{feature_label('eng_queue_age_days')}: {health.get('eng_queue_age_days')}; "
+        f"{feature_label('prior_oa_findings')}: {health.get('prior_oa_findings')}\n"
         f"- Recent history: {latest}\n"
         f"- Tech data / disposition guidance: {doc_snip}...\n\n"
         f"_Advisory only — cite authoritative NAMP tech data before acting._\n\n"
@@ -124,8 +126,8 @@ def _mock_recommend(buno: str, component: str, payload: dict) -> str:
 def _mock_explain(buno: str, component: str, health: dict, hits: list[dict]) -> str:
     top = health.get("contributing_signals", [])[:3]
     signal_lines = "\n".join(
-        f"- `{s['feature']}` = {s['value']} (baseline {s['baseline']}, "
-        f"concern {s['concern_score']})"
+        f"- **{feature_label(s['feature'])}** = {s['value']} "
+        f"(baseline {s['baseline']}, concern {s['concern_score']})"
         for s in top
     )
     citations = "\n".join(

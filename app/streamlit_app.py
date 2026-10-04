@@ -26,6 +26,7 @@ except Exception:
 
 from predictive_maintenance.agent.advisor import explain_risk, recommend_next_action
 from predictive_maintenance.agent.tools import search_tech_data
+from predictive_maintenance.config import COLUMN_LABELS, feature_label
 from predictive_maintenance.ml.inference import FailureRiskModel, load_scored_fleet
 
 st.set_page_config(
@@ -42,6 +43,22 @@ DRIVER_COLORS = {
     "Engineering": "#6b2d5c",
     "On-plan": "#3d7a4c",
 }
+
+
+def labeled_frame(df: pd.DataFrame) -> pd.DataFrame:
+    """Rename snake_case columns (and feature keys) for user-facing tables."""
+    out = df.copy()
+    if "feature" in out.columns:
+        out["feature"] = out["feature"].map(lambda k: feature_label(str(k)))
+    if "direction" in out.columns:
+        out["direction"] = out["direction"].map(
+            {
+                "elevates_risk": "Elevates risk",
+                "protective": "Protective",
+            }
+        ).fillna(out["direction"])
+    rename = {c: COLUMN_LABELS[c] for c in out.columns if c in COLUMN_LABELS}
+    return out.rename(columns=rename)
 
 
 @st.cache_resource
@@ -84,19 +101,14 @@ def main() -> None:
         st.markdown(
             """
             1. Line board shows at-risk **BUNOs**
-            2. Drill into **O&A / AWP / eng** drivers + ML signals
+            2. Drill into **O&A / AWP / eng** drivers + risk signals
             3. Agent recommends next mitigation
             4. Engineer searches **tech data / dispositions** (RAG)
 
-            **ML:** LogReg → RF → XGBoost (best by ROC-AUC)
             **Target:** PMI overrun / late delivery
-            **Threshold:** recall-biased (0.35)
+            **Threshold:** recall-biased early-warning operating point
             """
         )
-        metrics_path = ROOT / "models" / "metrics.json"
-        if metrics_path.exists():
-            st.subheader("Model metrics")
-            st.code(metrics_path.read_text(encoding="utf-8")[:1800], language="json")
 
     if role == "Planner / Production Controller":
         render_planner(line, model)
@@ -105,12 +117,11 @@ def main() -> None:
 
 
 def render_planner(line: pd.DataFrame, model: FailureRiskModel) -> None:
-    c1, c2, c3, c4, c5 = st.columns(5)
+    c1, c2, c3, c4 = st.columns(4)
     c1.metric("BUNOs on line", line["buno"].nunique())
     c2.metric("RED (likely late)", int((line["risk_band"] == "RED").sum()))
     c3.metric("AMBER", int((line["risk_band"] == "AMBER").sum()))
     c4.metric("AWP holds", int((line.get("status", pd.Series(dtype=str)) == "AWP hold").sum()))
-    c5.metric("Model", model.model_name.replace("_", " ").title())
 
     left, right = st.columns([1.2, 1])
     with left:
@@ -176,7 +187,7 @@ def render_planner(line: pd.DataFrame, model: FailureRiskModel) -> None:
     ]
     board = line.sort_values("overrun_risk", ascending=False)[board_cols].copy()
     board["overrun_risk"] = board["overrun_risk"].map(lambda x: f"{x:.0%}")
-    st.dataframe(board, use_container_width=True, hide_index=True)
+    st.dataframe(labeled_frame(board), use_container_width=True, hide_index=True)
 
     st.divider()
     st.subheader("Aircraft detail")
@@ -200,14 +211,14 @@ def render_planner(line: pd.DataFrame, model: FailureRiskModel) -> None:
     )
 
     d1, d2, d3 = st.columns(3)
-    d1.metric("Prior O&A findings", int(row.get("prior_oa_findings", 0)))
-    d2.metric("AWP days open", f"{row.get('awp_days_open', 0):.0f}")
-    d3.metric("Eng queue age (days)", f"{row.get('eng_queue_age_days', 0):.0f}")
+    d1.metric(feature_label("prior_oa_findings"), int(row.get("prior_oa_findings", 0)))
+    d2.metric(feature_label("awp_days_open"), f"{row.get('awp_days_open', 0):.0f}")
+    d3.metric(feature_label("eng_queue_age_days"), f"{row.get('eng_queue_age_days', 0):.0f}")
 
     prediction = model.predict({c: float(row[c]) for c in model.feature_columns})
     st.markdown("#### Contributing signals")
     st.dataframe(
-        pd.DataFrame(prediction["contributing_signals"]),
+        labeled_frame(pd.DataFrame(prediction["contributing_signals"])),
         use_container_width=True,
         hide_index=True,
     )
@@ -280,7 +291,7 @@ def render_engineer(line: pd.DataFrame, model: FailureRiskModel) -> None:
     ].copy()
     if "overrun_risk" in show.columns:
         show["overrun_risk"] = show["overrun_risk"].map(lambda x: f"{float(x):.0%}")
-    st.dataframe(show, use_container_width=True, hide_index=True)
+    st.dataframe(labeled_frame(show), use_container_width=True, hide_index=True)
 
     options = line.sort_values("eng_queue_age_days", ascending=False)["buno"].astype(str).tolist()
     selected = st.selectbox("BUNO context", options, index=0, key="eng_buno")
@@ -315,8 +326,8 @@ def render_engineer(line: pd.DataFrame, model: FailureRiskModel) -> None:
         st.markdown(exp["explanation"])
 
     st.caption(
-        f"Model: {model.model_name} · Features encode O&A history, AWP exposure, "
-        f"and eng queue age for P(PMI overrun)."
+        "Risk signals combine over-and-above history, AWP exposure, "
+        "and engineering queue age to estimate PMI overrun likelihood."
     )
 
 

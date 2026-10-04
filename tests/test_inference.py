@@ -15,7 +15,13 @@ from predictive_maintenance.agent.tools import (
     get_vehicle_health,
     search_tech_data,
 )
-from predictive_maintenance.config import FEATURE_COLUMNS, OPERATING_THRESHOLD, TARGET_COLUMN
+from predictive_maintenance.config import (
+    FEATURE_COLUMNS,
+    FEATURE_LABELS,
+    OPERATING_THRESHOLD,
+    TARGET_COLUMN,
+    feature_label,
+)
 from predictive_maintenance.data.generate import (
     generate_component_history,
     generate_fleet_data,
@@ -106,6 +112,14 @@ def trained_env(tmp_path_factory):
     tools_mod._parts.cache_clear()
     tools_mod._model.cache_clear()
     tools_mod._rag.cache_clear()
+
+
+def test_feature_labels_cover_ml_columns():
+    for col in FEATURE_COLUMNS:
+        assert col in FEATURE_LABELS
+        label = feature_label(col)
+        assert " " in label or label.isupper()
+        assert "_" not in label
 
 
 def test_generate_fleet_has_required_columns():
