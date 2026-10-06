@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 
 import pandas as pd
 import pytest
@@ -226,6 +227,57 @@ def test_advisor_mock_path(trained_env, monkeypatch):
     exp = explain_risk(buno)
     assert exp["mode"] == "mock"
     assert "explanation" in exp
+
+
+def test_openai_api_key_ignores_placeholder(monkeypatch):
+    from predictive_maintenance.agent.advisor import openai_api_key
+
+    monkeypatch.setenv("OPENAI_API_KEY", "Key")
+    assert openai_api_key() is None
+    monkeypatch.setenv("OPENAI_API_KEY", "   ")
+    assert openai_api_key() is None
+    monkeypatch.setenv("OPENAI_API_KEY", "sk-test-real-looking")
+    assert openai_api_key() == "sk-test-real-looking"
+
+
+def test_apply_openai_secrets_from_streamlit_secrets(monkeypatch):
+    from predictive_maintenance.agent import advisor as advisor_mod
+
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.delenv("OPENAI_MODEL", raising=False)
+
+    class FakeSecrets(dict):
+        def get(self, key, default=None):
+            return super().get(key, default)
+
+    class FakeSt:
+        secrets = FakeSecrets(
+            {"OPENAI_API_KEY": " sk-from-secrets ", "OPENAI_MODEL": "gpt-4o-mini"}
+        )
+
+    monkeypatch.setitem(__import__("sys").modules, "streamlit", FakeSt())
+    advisor_mod.apply_openai_secrets()
+    assert os.environ.get("OPENAI_API_KEY") == "sk-from-secrets"
+    assert os.environ.get("OPENAI_MODEL") == "gpt-4o-mini"
+    assert advisor_mod.openai_api_key() == "sk-from-secrets"
+
+
+def test_advisor_uses_openai_path_when_key_present(trained_env, monkeypatch):
+    """With a key set, advisor must call OpenAI path (not silently mock on API error)."""
+    from predictive_maintenance.agent import advisor as advisor_mod
+
+    monkeypatch.setenv("OPENAI_API_KEY", "sk-test-key")
+
+    def boom(*_a, **_k):
+        raise RuntimeError("simulated 401 Unauthorized")
+
+    monkeypatch.setattr(advisor_mod, "_openai_recommend", boom)
+    monkeypatch.setattr(advisor_mod, "_openai_explain", boom)
+
+    with pytest.raises(RuntimeError, match="401"):
+        recommend_next_action(trained_env["buno"])
+    with pytest.raises(RuntimeError, match="401"):
+        explain_risk(trained_env["buno"])
 
 
 def test_zip_without_strict():

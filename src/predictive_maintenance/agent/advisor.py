@@ -15,8 +15,50 @@ from predictive_maintenance.agent.tools import (
 from predictive_maintenance.config import feature_label
 
 
+def apply_openai_secrets() -> None:
+    """Copy Streamlit secrets into os.environ (safe to call repeatedly).
+
+    Import-time bridges often fail on Streamlit Cloud before secrets are ready.
+    Call this at app start and immediately before any OpenAI path.
+    """
+    try:
+        import streamlit as st
+
+        secrets = getattr(st, "secrets", None)
+        if secrets is None:
+            return
+        for key in ("OPENAI_API_KEY", "OPENAI_MODEL"):
+            val = None
+            try:
+                # AttrDict supports both .get and __getitem__
+                if hasattr(secrets, "get"):
+                    val = secrets.get(key)
+                if val is None:
+                    val = secrets[key]
+            except Exception:
+                continue
+            if val is None:
+                continue
+            text = str(val).strip()
+            # Ignore empty / placeholder mistakes like literal "Key"
+            if text and text.lower() not in {"key", "none", "null", "changeme"}:
+                os.environ[key] = text
+    except Exception:
+        pass
+
+
+def openai_api_key() -> str | None:
+    """Return a usable OpenAI API key, or None if mock mode should run."""
+    apply_openai_secrets()
+    key = (os.getenv("OPENAI_API_KEY") or "").strip()
+    if not key or key.lower() in {"key", "none", "null", "changeme"}:
+        return None
+    return key
+
+
 def recommend_next_action(buno: str, component: str | None = None) -> dict[str, Any]:
     """Run tools then produce a grounded recommendation (live or mock LLM)."""
+    apply_openai_secrets()
     health = get_aircraft_health(buno)
     if "error" in health:
         return health
@@ -39,8 +81,10 @@ def recommend_next_action(buno: str, component: str | None = None) -> dict[str, 
         "tech_hits": tech["hits"],
     }
 
-    if os.getenv("OPENAI_API_KEY"):
-        recommendation = _openai_recommend(buno, focus, tool_payload)
+    api_key = openai_api_key()
+    if api_key:
+        # Do not catch auth/API errors — surface 401/etc. so Cloud secrets can be debugged
+        recommendation = _openai_recommend(buno, focus, tool_payload, api_key=api_key)
         mode = "openai"
     else:
         recommendation = _mock_recommend(buno, focus, tool_payload)
@@ -58,6 +102,7 @@ def recommend_next_action(buno: str, component: str | None = None) -> dict[str, 
 
 def explain_risk(buno: str, component: str | None = None) -> dict[str, Any]:
     """RAG-grounded explanation of why a BUNO is at overrun risk."""
+    apply_openai_secrets()
     health = get_aircraft_health(buno)
     if "error" in health:
         return health
@@ -81,8 +126,10 @@ def explain_risk(buno: str, component: str | None = None) -> dict[str, Any]:
         "contributing_signals": health.get("contributing_signals", []),
     }
 
-    if os.getenv("OPENAI_API_KEY"):
-        text = _openai_explain(query, tech["hits"], focus_row)
+    api_key = openai_api_key()
+    if api_key:
+        # Do not catch auth/API errors — surface 401/etc. so Cloud secrets can be debugged
+        text = _openai_explain(query, tech["hits"], focus_row, api_key=api_key)
         mode = "openai"
     else:
         text = _mock_explain(buno, focus, health, tech["hits"])
@@ -108,7 +155,7 @@ def _mock_recommend(buno: str, component: str, payload: dict) -> str:
     awp_count = parts.get("awp_count", 0)
     return (
         f"**Recommendation for BUNO {buno} / {component}** "
-        f"(mock advisor — set `OPENAI_API_KEY` for live GenAI)\n\n"
+        f"(mock advisor — set Streamlit secret `OPENAI_API_KEY` for live GenAI)\n\n"
         f"- Risk band: **{health['risk_band']}** "
         f"(overrun risk {health['overrun_risk']:.0%})\n"
         f"- Primary delay driver: **{health.get('primary_delay_driver')}**\n"
@@ -145,10 +192,12 @@ def _mock_explain(buno: str, component: str, health: dict, hits: list[dict]) -> 
     )
 
 
-def _openai_recommend(buno: str, component: str, payload: dict) -> str:
+def _openai_recommend(
+    buno: str, component: str, payload: dict, api_key: str | None = None
+) -> str:
     from openai import OpenAI
 
-    client = OpenAI()
+    client = OpenAI(api_key=api_key or openai_api_key())
     prompt = (
         "You are an FRCE MV-22 PMI production advisor. Using ONLY the tool JSON, "
         "recommend the next action for planners/production controllers in <=120 words. "
@@ -165,10 +214,12 @@ def _openai_recommend(buno: str, component: str, payload: dict) -> str:
     return resp.choices[0].message.content or ""
 
 
-def _openai_explain(query: str, hits: list[dict], focus: dict) -> str:
+def _openai_explain(
+    query: str, hits: list[dict], focus: dict, api_key: str | None = None
+) -> str:
     from openai import OpenAI
 
-    client = OpenAI()
+    client = OpenAI(api_key=api_key or openai_api_key())
     context = "\n\n".join(f"[{h['source']}] {h['text']}" for h in hits)
     prompt = (
         "Explain MV-22 PMI overrun risk using the context and signals. "

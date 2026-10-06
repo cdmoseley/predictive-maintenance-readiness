@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import os
 import sys
 from pathlib import Path
 
@@ -15,17 +14,21 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-# Streamlit Cloud secrets → env bridge (no-op when secrets unavailable)
+# Streamlit Cloud secrets → env bridge (retry again in main() — import-time may be early)
 try:
-    if hasattr(st, "secrets"):
-        for key in ("OPENAI_API_KEY", "OPENAI_MODEL"):
-            if key in st.secrets and not os.getenv(key):
-                os.environ[key] = str(st.secrets[key])
+    from predictive_maintenance.agent.advisor import apply_openai_secrets
+
+    apply_openai_secrets()
 except Exception:
     pass
 
 # Imports after sys.path bootstrap so Cloud finds `src/predictive_maintenance`
-from predictive_maintenance.agent.advisor import explain_risk, recommend_next_action
+from predictive_maintenance.agent.advisor import (
+    apply_openai_secrets,
+    explain_risk,
+    openai_api_key,
+    recommend_next_action,
+)
 from predictive_maintenance.agent.tools import search_tech_data
 from predictive_maintenance.config import COLUMN_LABELS, FEATURE_COLUMNS, feature_label
 from predictive_maintenance.ml.inference import contributing_signals, load_scored_fleet
@@ -100,12 +103,15 @@ def _signals_for_row(row: pd.Series, model) -> list[dict]:
 
 
 def main() -> None:
+    # Secrets are often unavailable at import time on Streamlit Cloud — re-apply here.
+    apply_openai_secrets()
+
     st.title("FRCE MV-22 PMI Delay Assistant")
     st.caption(
         "Notional 90-day pilot concept for Fleet Readiness Center East — "
         "BUNO-level overrun risk, delay drivers (O&A / AWP / engineering), "
         "and grounded GenAI. Not real FRCE data. "
-        "Set `OPENAI_API_KEY` for live GenAI; mock advisor otherwise."
+        "Set Streamlit secret `OPENAI_API_KEY` for live GenAI; mock advisor otherwise."
     )
 
     line = get_line()
@@ -130,6 +136,11 @@ def main() -> None:
             **Threshold:** recall-biased early-warning operating point
             """
         )
+        apply_openai_secrets()
+        if openai_api_key():
+            st.caption("GenAI: OpenAI key detected (live path)")
+        else:
+            st.caption("GenAI: mock (set secret `OPENAI_API_KEY`)")
 
     if role == "Planner / Production Controller":
         render_planner(line, model)
@@ -251,10 +262,12 @@ def render_planner(line: pd.DataFrame, model) -> None:
     with a1:
         if st.button("Recommend next action (agent)", use_container_width=True):
             with st.spinner("Running aircraft / AWP / tech-data tools…"):
+                apply_openai_secrets()
                 st.session_state["recommend"] = recommend_next_action(selected, focus)
     with a2:
         if st.button("Explain overrun risk (RAG)", use_container_width=True):
             with st.spinner("Retrieving tech data + explaining…"):
+                apply_openai_secrets()
                 st.session_state["explain"] = explain_risk(selected, focus)
 
     if "recommend" in st.session_state:
@@ -332,6 +345,7 @@ def render_engineer(line: pd.DataFrame, model) -> None:
         if st.button("Explain this BUNO's risk (RAG)", use_container_width=True):
             focus = str(row.get("focus_system", "structure"))
             with st.spinner("Explaining…"):
+                apply_openai_secrets()
                 st.session_state["eng_explain"] = explain_risk(selected, focus)
 
     if "eng_search" in st.session_state:
