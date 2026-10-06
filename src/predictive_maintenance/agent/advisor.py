@@ -101,7 +101,7 @@ def recommend_next_action(buno: str, component: str | None = None) -> dict[str, 
 
 
 def explain_risk(buno: str, component: str | None = None) -> dict[str, Any]:
-    """RAG-grounded explanation of why a BUNO is at overrun risk."""
+    """Explanation of why a BUNO is at overrun risk (planner insight path)."""
     apply_openai_secrets()
     health = get_aircraft_health(buno)
     if "error" in health:
@@ -143,6 +143,48 @@ def explain_risk(buno: str, component: str | None = None) -> dict[str, Any]:
         "explanation": text,
         "sources": [{"source": h["source"], "chunk_id": h["chunk_id"]} for h in tech["hits"]],
         "contributing_signals": health.get("contributing_signals", []),
+    }
+
+
+def search_tech_manuals(query: str, k: int = 5) -> dict[str, Any]:
+    """Retrieve notional tech data / disposition archive hits for the Engineer tab."""
+    return search_tech_data(query, k=k)
+
+
+def recommend_disposition(
+    buno: str,
+    query: str,
+    component: str | None = None,
+    hits: list[dict] | None = None,
+) -> dict[str, Any]:
+    """Engineer-facing disposition brief grounded in retrieved manuals."""
+    apply_openai_secrets()
+    health = get_aircraft_health(buno)
+    if "error" in health:
+        return health
+
+    focus = component or health.get("focus_system") or "structure"
+    retrieved = hits if hits is not None else search_tech_data(query, k=5)["hits"]
+    sources = [{"source": h["source"], "chunk_id": h["chunk_id"]} for h in retrieved]
+
+    api_key = openai_api_key()
+    if api_key:
+        text = _openai_disposition(
+            buno, focus, query, health, retrieved, api_key=api_key
+        )
+        mode = "openai"
+    else:
+        text = _mock_disposition(buno, focus, health, retrieved)
+        mode = "mock"
+
+    return {
+        "buno": buno,
+        "component": focus,
+        "query": query,
+        "mode": mode,
+        "recommendation": text,
+        "sources": sources,
+        "hits": retrieved,
     }
 
 
@@ -345,6 +387,81 @@ def _json_payload_to_prose(data: Any) -> str:
             paras = [". ".join(bits) + ".", str(namp).strip()]
 
     return "\n\n".join(p for p in paras if p).strip()
+
+
+def _mock_disposition(
+    buno: str, component: str, health: dict, hits: list[dict]
+) -> str:
+    """Engineer disposition brief grounded in retrieved manuals (silent fallback)."""
+    if hits:
+        top = hits[0]
+        src = top.get("source", "disposition_archive.md")
+        snippet = (top.get("text") or "").replace("\n", " ").strip()
+        if len(snippet) > 220:
+            snippet = snippet[:220].rstrip() + "…"
+    else:
+        src = "disposition_archive.md"
+        snippet = "No closely matching disposition was retrieved for this query."
+
+    return (
+        f"For BUNO {buno} on the {component} focus area, the closest prior guidance "
+        f"points to a disposition path described in {src}. Based on that material — "
+        f"{snippet} — recommend confirming whether the finding matches the archived "
+        f"condition before opening a new engineering request, and document the prior "
+        f"disposition ID if you are requesting confirmation or a limited deviation.\n\n"
+        f"Aircraft context: risk band {health.get('risk_band')} with primary delay "
+        f"driver {health.get('primary_delay_driver')}. This recommendation is advisory "
+        f"under NAMP and must be verified against authoritative technical data before "
+        f"work proceeds."
+    )
+
+
+def _openai_disposition(
+    buno: str,
+    component: str,
+    query: str,
+    health: dict,
+    hits: list[dict],
+    api_key: str | None = None,
+) -> str:
+    from openai import OpenAI
+
+    client = OpenAI(api_key=api_key or openai_api_key())
+    context = "\n\n".join(
+        f"[{h.get('source')}#{h.get('chunk_id')}] {h.get('text')}" for h in hits
+    )
+    prompt = (
+        "You are an FRCE depot engineer using retrieved technical data and prior "
+        "disposition records to recommend what to fix or how to disposition a finding.\n"
+        "Write 1–3 short narrative paragraphs (about 100–150 words).\n\n"
+        "Ground every recommendation in the retrieved manuals below. Cite filenames "
+        "inline (e.g. disposition_archive.md, namp_tech_data_excerpts.md). Prefer "
+        "reusing a similar prior disposition when the condition matches; otherwise say "
+        "what to verify before opening a new request.\n\n"
+        "Story flow: matching condition from the corpus → recommended fix or "
+        "disposition action → inline doc cites → NAMP advisory close.\n\n"
+        "Hard rules: NO JSON, NO YAML, NO code fences, NO bullet lists, NO numbered lists. "
+        "Write connected sentences only.\n\n"
+        f"BUNO: {buno}\nFocus system: {component}\nEngineer query: {query}\n"
+        f"Aircraft risk band: {health.get('risk_band')}; primary delay driver: "
+        f"{health.get('primary_delay_driver')}\n\n"
+        f"RETRIEVED MANUALS:\n{context or '(no hits)'}"
+    )
+    resp = client.chat.completions.create(
+        model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+        messages=[
+            {
+                "role": "system",
+                "content": (
+                    "You produce disposition recommendations grounded only in the "
+                    "retrieved manuals. Narrative paragraphs only — never JSON or lists."
+                ),
+            },
+            {"role": "user", "content": prompt},
+        ],
+        temperature=0.2,
+    )
+    return _format_llm_markdown(resp.choices[0].message.content or "")
 
 
 def _openai_recommend(

@@ -8,7 +8,12 @@ import os
 import pandas as pd
 import pytest
 
-from predictive_maintenance.agent.advisor import explain_risk, recommend_next_action
+from predictive_maintenance.agent.advisor import (
+    explain_risk,
+    recommend_disposition,
+    recommend_next_action,
+    search_tech_manuals,
+)
 from predictive_maintenance.agent.tools import (
     get_aircraft_health,
     get_component_history,
@@ -227,6 +232,25 @@ def test_advisor_mock_path(trained_env, monkeypatch):
     exp = explain_risk(buno)
     assert exp["mode"] == "mock"
     assert "explanation" in exp
+
+
+def test_engineer_disposition_rag_mock(trained_env, monkeypatch):
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    buno = trained_env["buno"]
+    manuals = search_tech_manuals("wiring chafing disposition", k=3)
+    assert manuals["hits"]
+
+    disp = recommend_disposition(
+        buno,
+        "wiring chafing disposition",
+        component=trained_env["component"],
+        hits=manuals["hits"],
+    )
+    assert disp["mode"] == "mock"
+    assert "recommendation" in disp
+    assert disp["sources"]
+    # Narrative prose, not a bullet dump
+    assert "- **" not in disp["recommendation"]
 
 
 def test_openai_api_key_ignores_placeholder(monkeypatch):

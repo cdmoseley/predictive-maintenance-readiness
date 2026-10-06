@@ -26,7 +26,9 @@ except Exception:
 from predictive_maintenance.agent.advisor import (
     apply_openai_secrets,
     explain_risk,
+    recommend_disposition,
     recommend_next_action,
+    search_tech_manuals,
 )
 from predictive_maintenance.config import COLUMN_LABELS, FEATURE_COLUMNS, feature_label
 from predictive_maintenance.ml.inference import contributing_signals, load_scored_fleet
@@ -270,10 +272,11 @@ def render_planner(line: pd.DataFrame, model) -> None:
 
 
 def render_engineer(line: pd.DataFrame, model) -> None:
-    st.subheader("Engineering disposition view")
+    st.subheader("Engineering tech-data workstation")
     st.caption(
-        "BUNOs with engineering pressure on the MV-22 PMI line. "
-        "Use Explain for diagnostic context; Recommend for a concrete next step."
+        "Search notional tech data and the local disposition archive, then get a "
+        "disposition recommendation grounded in those manuals. Results are advisory "
+        "and must be verified against authoritative NAMP technical data."
     )
 
     eng = line[line.get("primary_delay_driver", pd.Series(dtype=str)) == "Engineering"].copy()
@@ -308,36 +311,60 @@ def render_engineer(line: pd.DataFrame, model) -> None:
     row = line[line["buno"].astype(str) == selected].iloc[0]
     focus = str(row.get("focus_system", "structure"))
 
-    if st.session_state.get("eng_insight_buno") != selected:
-        st.session_state["eng_insight_buno"] = selected
-        st.session_state.pop("eng_insight", None)
+    if st.session_state.get("eng_rag_buno") != selected:
+        st.session_state["eng_rag_buno"] = selected
+        st.session_state.pop("eng_hits", None)
+        st.session_state.pop("eng_disposition", None)
 
-    col_a, col_b = st.columns(2)
-    with col_a:
-        if st.button("Recommend next action", use_container_width=True, key="eng_rec"):
-            with st.spinner("Preparing recommendation…"):
-                apply_openai_secrets()
-                result = recommend_next_action(selected, focus)
-                st.session_state["eng_insight"] = {
-                    "kind": "recommend",
-                    "title": "Recommended next action",
-                    "body": result["recommendation"],
-                }
-    with col_b:
-        if st.button("Explain overrun risk", use_container_width=True, key="eng_exp"):
-            with st.spinner("Preparing risk explanation…"):
-                apply_openai_secrets()
-                result = explain_risk(selected, focus)
-                st.session_state["eng_insight"] = {
-                    "kind": "explain",
-                    "title": "Overrun risk explanation",
-                    "body": result["explanation"],
-                }
+    default_q = (
+        f"MV-22 {focus} disposition similar condition corrosion wiring hydraulics"
+    )
+    query = st.text_input(
+        "Search tech data & disposition archive",
+        value=st.session_state.get("eng_query", default_q),
+        key="eng_query_input",
+    )
+    st.session_state["eng_query"] = query
 
-    insight = st.session_state.get("eng_insight")
-    if insight:
-        st.markdown(f"##### {insight['title']}")
-        st.markdown(insight["body"])
+    c1, c2 = st.columns(2)
+    with c1:
+        if st.button("Search manuals", use_container_width=True, key="eng_search"):
+            with st.spinner("Searching tech data and dispositions…"):
+                result = search_tech_manuals(query, k=5)
+                st.session_state["eng_hits"] = result["hits"]
+                st.session_state.pop("eng_disposition", None)
+    with c2:
+        if st.button(
+            "Recommend disposition from manuals",
+            use_container_width=True,
+            key="eng_disp",
+        ):
+            with st.spinner("Preparing disposition recommendation…"):
+                apply_openai_secrets()
+                hits = st.session_state.get("eng_hits")
+                result = recommend_disposition(
+                    selected, query, component=focus, hits=hits
+                )
+                st.session_state["eng_hits"] = result.get("hits") or hits
+                st.session_state["eng_disposition"] = result
+
+    hits = st.session_state.get("eng_hits") or []
+    if hits:
+        st.markdown("#### Retrieved manuals")
+        for h in hits:
+            label = f"{h['source']}#{h['chunk_id']}  ·  score {h.get('score', 0)}"
+            with st.expander(label):
+                st.write(h["text"])
+
+    disp = st.session_state.get("eng_disposition")
+    if disp:
+        st.markdown("#### Disposition recommendation")
+        st.markdown(disp["recommendation"])
+        if disp.get("sources"):
+            src_lbl = ", ".join(
+                f"{s['source']}#{s['chunk_id']}" for s in disp["sources"]
+            )
+            st.caption(f"Grounded in: {src_lbl}")
 
 
 if __name__ == "__main__":
