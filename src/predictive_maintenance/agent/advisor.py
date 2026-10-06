@@ -147,48 +147,50 @@ def explain_risk(buno: str, component: str | None = None) -> dict[str, Any]:
 
 
 def _mock_recommend(buno: str, component: str, payload: dict) -> str:
+    """Prescriptive fallback narrative — concrete next steps, not a diagnosis essay."""
     health = payload["aircraft_health"]
     parts = payload.get("parts_awp", {})
-    events = payload["component_history"].get("events", [])
-    latest = events[0]["notes"] if events else "no recent events on file"
-    doc_snip = payload["manual_hits"][0]["text"][:220] if payload["manual_hits"] else ""
     awp_count = parts.get("awp_count", 0)
+    doc = ""
+    if payload.get("manual_hits"):
+        doc = payload["manual_hits"][0].get("source", "local PMI guidance")
+    driver = health.get("primary_delay_driver", "the leading delay driver")
+    action = health.get("recommended_action", "re-plan the work package within 48 hours")
     return (
-        f"**Recommendation for BUNO {buno} / {component}** "
-        f"(mock advisor — set Streamlit secret `OPENAI_API_KEY` for live GenAI)\n\n"
-        f"- Risk band: **{health['risk_band']}** "
-        f"(overrun risk {health['overrun_risk']:.0%})\n"
-        f"- Primary delay driver: **{health.get('primary_delay_driver')}**\n"
-        f"- Action: {health['recommended_action']}\n"
-        f"- AWP lines open: {awp_count}; "
-        f"{feature_label('eng_queue_age_days')}: {health.get('eng_queue_age_days')}; "
-        f"{feature_label('prior_oa_findings')}: {health.get('prior_oa_findings')}\n"
-        f"- Recent history: {latest}\n"
-        f"- Tech data / disposition guidance: {doc_snip}...\n\n"
-        f"_Advisory only — cite authoritative NAMP tech data before acting._\n\n"
-        f"Tools used: `get_aircraft_health`, `get_parts_awp_status`, `search_tech_data`."
+        f"For BUNO {buno} ({component}), prioritize mitigation now while the aircraft "
+        f"sits in {health.get('status', 'PMI')} at {health.get('overrun_risk', 0):.0%} "
+        f"overrun risk. The priority driver to attack is {driver}; treat that as the "
+        f"first production action rather than waiting for calendar completion.\n\n"
+        f"Next step: {action}. With {awp_count} AWP line(s) and "
+        f"{health.get('eng_queue_age_days', 0):.0f} days on the engineering queue, "
+        f"align material expediting and disposition chase in the same stand-up. "
+        f"Supporting process language is available in {doc or 'mv22_pmi_guidance.md'}. "
+        f"This guidance is advisory under NAMP and is not a substitute for "
+        f"authoritative technical data."
     )
 
 
 def _mock_explain(buno: str, component: str, health: dict, hits: list[dict]) -> str:
+    """Diagnostic fallback narrative — why at risk; no action plan."""
     top = health.get("contributing_signals", [])[:3]
-    signal_lines = "\n".join(
-        f"- **{feature_label(s['feature'])}** = {s['value']} "
-        f"(baseline {s['baseline']}, concern {s['concern_score']})"
-        for s in top
-    )
-    citations = "\n".join(
-        f"- [{h['source']}#{h['chunk_id']}] {h['text'][:160]}..." for h in hits[:3]
-    )
+    signal_bits = []
+    for s in top:
+        signal_bits.append(
+            f"{feature_label(s['feature'])} at {s['value']} "
+            f"(baseline {s['baseline']})"
+        )
+    signal_txt = "; ".join(signal_bits) if signal_bits else "elevated delay-driver signals"
+    src = hits[0]["source"] if hits else "local PMI guidance"
     return (
-        f"**Why BUNO {buno} / {component} is {health['risk_band']}** "
-        f"(mock RAG explanation)\n\n"
-        f"Predicted PMI overrun risk is **{health['overrun_risk']:.0%}**. "
-        f"Primary delay driver: **{health.get('primary_delay_driver')}**.\n\n"
-        f"Top contributing signals:\n{signal_lines}\n\n"
-        f"Grounded in notional tech data / dispositions:\n{citations}\n\n"
-        f"_NAMP reminder: AI guidance is advisory; maintenance actions require "
-        f"authoritative technical data citation._"
+        f"BUNO {buno} is in risk band {health['risk_band']} with a predicted PMI "
+        f"overrun probability of {health['overrun_risk']:.0%} on the {component} focus "
+        f"area. The primary delay driver showing up in the fused line picture is "
+        f"{health.get('primary_delay_driver')}, consistent with the aircraft's current "
+        f"status of {health.get('status', 'in work')}.\n\n"
+        f"What is driving that assessment is {signal_txt}. Similar patterns are "
+        f"described in {src}. This explanation is diagnostic only — it does not "
+        f"prescribe the next production move. Guidance remains advisory under NAMP "
+        f"and must be confirmed against authoritative technical data."
     )
 
 
@@ -352,14 +354,17 @@ def _openai_recommend(
 
     client = OpenAI(api_key=api_key or openai_api_key())
     prompt = (
-        "You are briefing an FRCE MV-22 production lead and Commanding Officer.\n"
-        "Using ONLY the tool data below, write 1–3 short paragraphs of narrative prose "
-        "(about 100–150 words total) that read like a leadership stand-up brief.\n\n"
-        "Story flow (in paragraph form, not a list):\n"
-        "situation → primary delay driver (Over-and-above, AWP, or Engineering) → "
-        "one concrete next action → cite supporting doc filenames inline "
-        "(e.g. disposition_archive.md) → close with a NAMP advisory note that AI "
-        "guidance is not authoritative tech data.\n\n"
+        "You are writing a PRESCRIPTIVE next-action brief for an FRCE MV-22 "
+        "production lead.\n"
+        "Using ONLY the tool data below, write 1–3 short narrative paragraphs "
+        "(about 100–150 words).\n\n"
+        "This is an ACTION PLAN, not a diagnosis. Focus on what to do next:\n"
+        "open with the priority (who/what to move first) → name the primary delay "
+        "driver only as the reason for that priority → give one concrete next "
+        "maintenance, supply, or engineering step with urgency → cite supporting "
+        "doc filenames inline → close with a NAMP advisory note.\n\n"
+        "Do NOT write a feature-by-feature risk diagnosis. Do NOT merely restate "
+        "why the aircraft is late. Emphasize the recommended move and who should own it.\n\n"
         "Hard rules: NO JSON, NO YAML, NO code fences, NO bullet lists, NO numbered lists. "
         "Write connected sentences only.\n\n"
         f"BUNO: {buno}\nSystem focus: {component}\n"
@@ -371,7 +376,8 @@ def _openai_recommend(
             {
                 "role": "system",
                 "content": (
-                    "Respond in plain-English narrative paragraphs only. "
+                    "You produce prescriptive narrative briefs only: concrete next "
+                    "actions for production. Never diagnose without an action. "
                     "Never output JSON, bullets, or numbered lists."
                 ),
             },
@@ -390,11 +396,16 @@ def _openai_explain(
     client = OpenAI(api_key=api_key or openai_api_key())
     context = "\n\n".join(f"[{h['source']}] {h['text']}" for h in hits)
     prompt = (
-        "You are briefing an FRCE depot engineer and production lead.\n"
-        "Explain MV-22 PMI overrun risk in 1–3 short narrative paragraphs "
-        "(about 100–150 words). Read like a stand-up brief, not a checklist.\n\n"
-        "Story flow: situation and risk → primary delay driver and why "
-        "(plain-language signals) → cite source filenames inline → NAMP advisory close.\n\n"
+        "You are writing a DIAGNOSTIC risk explanation for an FRCE MV-22 "
+        "production lead and depot engineer.\n"
+        "Using ONLY the context and signals below, write 1–3 short narrative "
+        "paragraphs (about 100–150 words) explaining WHY this BUNO/component is "
+        "at overrun risk.\n\n"
+        "This is a DIAGNOSIS, not an action plan. Cover: current risk picture → "
+        "primary delay driver and what in the history/features is elevating risk → "
+        "cite source filenames inline → NAMP advisory close.\n\n"
+        "Do NOT recommend next steps, priorities, expedites, or 'what to do'. "
+        "Do NOT tell the team which shop to task. Stay explanatory.\n\n"
         "Hard rules: NO JSON, NO YAML, NO code fences, NO bullet lists, NO numbered lists. "
         "Write connected sentences only.\n\n"
         f"Query: {query}\n"
@@ -407,7 +418,8 @@ def _openai_explain(
             {
                 "role": "system",
                 "content": (
-                    "Respond in plain-English narrative paragraphs only. "
+                    "You produce diagnostic narrative explanations only: why risk is "
+                    "elevated. Never prescribe next actions. "
                     "Never output JSON, bullets, or numbered lists."
                 ),
             },

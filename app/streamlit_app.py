@@ -26,10 +26,8 @@ except Exception:
 from predictive_maintenance.agent.advisor import (
     apply_openai_secrets,
     explain_risk,
-    openai_api_key,
     recommend_next_action,
 )
-from predictive_maintenance.agent.tools import search_tech_data
 from predictive_maintenance.config import COLUMN_LABELS, FEATURE_COLUMNS, feature_label
 from predictive_maintenance.ml.inference import contributing_signals, load_scored_fleet
 
@@ -37,7 +35,7 @@ st.set_page_config(
     page_title="FRCE MV-22 PMI Delay Assistant",
     page_icon="✈️",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
 )
 
 BAND_COLORS = {"GREEN": "#1f7a4c", "AMBER": "#c47a00", "RED": "#b42318"}
@@ -55,12 +53,16 @@ def labeled_frame(df: pd.DataFrame) -> pd.DataFrame:
     if "feature" in out.columns:
         out["feature"] = out["feature"].map(lambda k: feature_label(str(k)))
     if "direction" in out.columns:
-        out["direction"] = out["direction"].map(
-            {
-                "elevates_risk": "Elevates risk",
-                "protective": "Protective",
-            }
-        ).fillna(out["direction"])
+        out["direction"] = (
+            out["direction"]
+            .map(
+                {
+                    "elevates_risk": "Elevates risk",
+                    "protective": "Protective",
+                }
+            )
+            .fillna(out["direction"])
+        )
     rename = {c: COLUMN_LABELS[c] for c in out.columns if c in COLUMN_LABELS}
     return out.rename(columns=rename)
 
@@ -72,8 +74,7 @@ def get_model():
         from predictive_maintenance.ml.inference import FailureRiskModel
 
         return FailureRiskModel()
-    except Exception as exc:  # noqa: BLE001 — Cloud may lack xgboost unpickle deps
-        st.sidebar.warning(f"Live model unavailable — using scored line board. ({exc})")
+    except Exception:
         return None
 
 
@@ -103,15 +104,13 @@ def _signals_for_row(row: pd.Series, model) -> list[dict]:
 
 
 def main() -> None:
-    # Secrets are often unavailable at import time on Streamlit Cloud — re-apply here.
     apply_openai_secrets()
 
     st.title("FRCE MV-22 PMI Delay Assistant")
     st.caption(
-        "Notional 90-day pilot concept for Fleet Readiness Center East — "
-        "BUNO-level overrun risk, delay drivers (O&A / AWP / engineering), "
-        "and grounded GenAI. Not real FRCE data. "
-        "Set Streamlit secret `OPENAI_API_KEY` for live GenAI; mock advisor otherwise."
+        "Notional MV-22 PMI line board for Fleet Readiness Center East — "
+        "BUNO overrun risk and delay drivers (over-and-above, AWP, engineering). "
+        "Not real FRCE data."
     )
 
     line = get_line()
@@ -122,25 +121,6 @@ def main() -> None:
         ["Planner / Production Controller", "Engineer"],
         index=0,
     )
-
-    with st.sidebar:
-        st.header("Pilot story")
-        st.markdown(
-            """
-            1. Line board shows at-risk **BUNOs**
-            2. Drill into **O&A / AWP / eng** drivers + risk signals
-            3. Agent recommends next mitigation
-            4. Engineer searches **tech data / dispositions** (RAG)
-
-            **Target:** PMI overrun / late delivery
-            **Threshold:** recall-biased early-warning operating point
-            """
-        )
-        apply_openai_secrets()
-        if openai_api_key():
-            st.caption("GenAI: OpenAI key detected (live path)")
-        else:
-            st.caption("GenAI: mock (set secret `OPENAI_API_KEY`)")
 
     if role == "Planner / Production Controller":
         render_planner(line, model)
@@ -180,11 +160,7 @@ def render_planner(line: pd.DataFrame, model) -> None:
     with right:
         st.subheader("Primary delay drivers")
         if "primary_delay_driver" in line.columns:
-            drv = (
-                line["primary_delay_driver"]
-                .value_counts()
-                .reset_index()
-            )
+            drv = line["primary_delay_driver"].value_counts().reset_index()
             drv.columns = ["driver", "count"]
             fig2 = px.bar(
                 drv,
@@ -256,48 +232,36 @@ def render_planner(line: pd.DataFrame, model) -> None:
     )
 
     st.divider()
-    st.subheader("Production advisor (GenAI)")
+    st.subheader("Aircraft insight")
     a1, a2 = st.columns(2)
     focus = str(row.get("focus_system", row.get("component", "structure")))
     with a1:
-        if st.button("Recommend next action (agent)", use_container_width=True):
-            with st.spinner("Running aircraft / AWP / tech-data tools…"):
+        if st.button("Recommend next action", use_container_width=True):
+            with st.spinner("Preparing recommendation…"):
                 apply_openai_secrets()
                 st.session_state["recommend"] = recommend_next_action(selected, focus)
     with a2:
-        if st.button("Explain overrun risk (RAG)", use_container_width=True):
-            with st.spinner("Retrieving tech data + explaining…"):
+        if st.button("Explain overrun risk", use_container_width=True):
+            with st.spinner("Preparing risk explanation…"):
                 apply_openai_secrets()
                 st.session_state["explain"] = explain_risk(selected, focus)
 
     if "recommend" in st.session_state:
         rec = st.session_state["recommend"]
-        st.success(f"Mode: `{rec.get('mode')}`")
+        st.markdown("##### Recommended next action")
         st.markdown(rec["recommendation"])
-        with st.expander("Tool traces"):
-            st.json(
-                {
-                    "get_aircraft_health": rec["tool_results"].get("aircraft_health"),
-                    "get_parts_awp_status": rec["tool_results"].get("parts_awp"),
-                    "search_tech_data": rec["tool_results"].get("tech_hits"),
-                }
-            )
 
     if "explain" in st.session_state:
         exp = st.session_state["explain"]
-        st.info(f"Mode: `{exp.get('mode')}`")
+        st.markdown("##### Overrun risk explanation")
         st.markdown(exp["explanation"])
-        if exp.get("sources"):
-            src_lbl = ", ".join(f"{s['source']}#{s['chunk_id']}" for s in exp["sources"])
-            st.caption(f"Sources: {src_lbl}")
 
 
 def render_engineer(line: pd.DataFrame, model) -> None:
-    st.subheader("Engineering disposition workstation")
-    st.markdown(
-        "Search notional tech data and the local disposition archive for similar "
-        "conditions. Results are **advisory** — cite authoritative NAMP tech data "
-        "before acting."
+    st.subheader("Engineering disposition view")
+    st.caption(
+        "BUNOs with engineering pressure on the MV-22 PMI line. "
+        "Use Explain for diagnostic context; Recommend for a concrete next step."
     )
 
     eng = line[line.get("primary_delay_driver", pd.Series(dtype=str)) == "Engineering"].copy()
@@ -330,40 +294,27 @@ def render_engineer(line: pd.DataFrame, model) -> None:
     options = line.sort_values("eng_queue_age_days", ascending=False)["buno"].astype(str).tolist()
     selected = st.selectbox("BUNO context", options, index=0, key="eng_buno")
     row = line[line["buno"].astype(str) == selected].iloc[0]
-    default_q = (
-        f"MV-22 {row.get('focus_system', 'structure')} disposition similar condition "
-        f"corrosion wiring hydraulics"
-    )
-    query = st.text_input("Disposition / tech-data search", value=default_q)
+    focus = str(row.get("focus_system", "structure"))
 
     col_a, col_b = st.columns(2)
     with col_a:
-        if st.button("Search tech data & dispositions", use_container_width=True):
-            with st.spinner("Retrieving…"):
-                st.session_state["eng_search"] = search_tech_data(query, k=5)
+        if st.button("Recommend next action", use_container_width=True, key="eng_rec"):
+            with st.spinner("Preparing recommendation…"):
+                apply_openai_secrets()
+                st.session_state["eng_recommend"] = recommend_next_action(selected, focus)
     with col_b:
-        if st.button("Explain this BUNO's risk (RAG)", use_container_width=True):
-            focus = str(row.get("focus_system", "structure"))
-            with st.spinner("Explaining…"):
+        if st.button("Explain overrun risk", use_container_width=True, key="eng_exp"):
+            with st.spinner("Preparing risk explanation…"):
                 apply_openai_secrets()
                 st.session_state["eng_explain"] = explain_risk(selected, focus)
 
-    if "eng_search" in st.session_state:
-        hits = st.session_state["eng_search"]["hits"]
-        st.markdown("#### Retrieval hits")
-        for h in hits:
-            with st.expander(f"{h['source']}#{h['chunk_id']} (score {h['score']})"):
-                st.write(h["text"])
+    if "eng_recommend" in st.session_state:
+        st.markdown("##### Recommended next action")
+        st.markdown(st.session_state["eng_recommend"]["recommendation"])
 
     if "eng_explain" in st.session_state:
-        exp = st.session_state["eng_explain"]
-        st.info(f"Mode: `{exp.get('mode')}`")
-        st.markdown(exp["explanation"])
-
-    st.caption(
-        "Risk signals combine over-and-above history, AWP exposure, "
-        "and engineering queue age to estimate PMI overrun likelihood."
-    )
+        st.markdown("##### Overrun risk explanation")
+        st.markdown(st.session_state["eng_explain"]["explanation"])
 
 
 if __name__ == "__main__":
