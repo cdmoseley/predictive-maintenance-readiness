@@ -280,6 +280,46 @@ def test_advisor_uses_openai_path_when_key_present(trained_env, monkeypatch):
         explain_risk(trained_env["buno"])
 
 
+def test_format_llm_markdown_passthrough_prose():
+    from predictive_maintenance.agent.advisor import _format_llm_markdown
+
+    prose = "- **Primary delay driver:** AWP\n- **Next action:** Expedite NSN kit"
+    assert _format_llm_markdown(prose) == prose
+
+
+def test_format_llm_markdown_unwraps_json_envelope():
+    from predictive_maintenance.agent.advisor import _format_llm_markdown
+
+    raw = json.dumps(
+        {
+            "next_action": {
+                "recommendation": "Pre-position hydraulic pump kit before next shop call",
+                "primary_delay_driver": "AWP",
+                "sources": ["disposition_archive.md", "mv22_pmi_guidance.md"],
+            }
+        }
+    )
+    out = _format_llm_markdown(raw)
+    assert "Pre-position hydraulic pump kit" in out
+    assert "AWP" in out
+    assert "disposition_archive.md" in out
+    assert not out.strip().startswith("{")
+
+
+def test_format_llm_markdown_handles_fenced_json():
+    from predictive_maintenance.agent.advisor import _format_llm_markdown
+
+    raw = (
+        "```json\n"
+        '{"recommendation": "Brief production lead on eng queue", '
+        '"primary_delay_driver": "Engineering"}\n'
+        "```"
+    )
+    out = _format_llm_markdown(raw)
+    assert "Brief production lead" in out
+    assert "Engineering" in out
+
+
 def test_zip_without_strict():
     """Guard: rag search path must not use zip(..., strict=True) for Py3.9."""
     import inspect
