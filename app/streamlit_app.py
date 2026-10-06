@@ -233,28 +233,40 @@ def render_planner(line: pd.DataFrame, model) -> None:
 
     st.divider()
     st.subheader("Aircraft insight")
-    a1, a2 = st.columns(2)
     focus = str(row.get("focus_system", row.get("component", "structure")))
+
+    # Reset insight panel when the selected aircraft changes
+    if st.session_state.get("planner_insight_buno") != selected:
+        st.session_state["planner_insight_buno"] = selected
+        st.session_state.pop("planner_insight", None)
+
+    a1, a2 = st.columns(2)
     with a1:
-        if st.button("Recommend next action", use_container_width=True):
+        if st.button("Recommend next action", use_container_width=True, key="planner_rec"):
             with st.spinner("Preparing recommendation…"):
                 apply_openai_secrets()
-                st.session_state["recommend"] = recommend_next_action(selected, focus)
+                result = recommend_next_action(selected, focus)
+                st.session_state["planner_insight"] = {
+                    "kind": "recommend",
+                    "title": "Recommended next action",
+                    "body": result["recommendation"],
+                }
     with a2:
-        if st.button("Explain overrun risk", use_container_width=True):
+        if st.button("Explain overrun risk", use_container_width=True, key="planner_exp"):
             with st.spinner("Preparing risk explanation…"):
                 apply_openai_secrets()
-                st.session_state["explain"] = explain_risk(selected, focus)
+                result = explain_risk(selected, focus)
+                st.session_state["planner_insight"] = {
+                    "kind": "explain",
+                    "title": "Overrun risk explanation",
+                    "body": result["explanation"],
+                }
 
-    if "recommend" in st.session_state:
-        rec = st.session_state["recommend"]
-        st.markdown("##### Recommended next action")
-        st.markdown(rec["recommendation"])
-
-    if "explain" in st.session_state:
-        exp = st.session_state["explain"]
-        st.markdown("##### Overrun risk explanation")
-        st.markdown(exp["explanation"])
+    # Exactly one answer panel — whichever button was clicked last
+    insight = st.session_state.get("planner_insight")
+    if insight:
+        st.markdown(f"##### {insight['title']}")
+        st.markdown(insight["body"])
 
 
 def render_engineer(line: pd.DataFrame, model) -> None:
@@ -296,25 +308,36 @@ def render_engineer(line: pd.DataFrame, model) -> None:
     row = line[line["buno"].astype(str) == selected].iloc[0]
     focus = str(row.get("focus_system", "structure"))
 
+    if st.session_state.get("eng_insight_buno") != selected:
+        st.session_state["eng_insight_buno"] = selected
+        st.session_state.pop("eng_insight", None)
+
     col_a, col_b = st.columns(2)
     with col_a:
         if st.button("Recommend next action", use_container_width=True, key="eng_rec"):
             with st.spinner("Preparing recommendation…"):
                 apply_openai_secrets()
-                st.session_state["eng_recommend"] = recommend_next_action(selected, focus)
+                result = recommend_next_action(selected, focus)
+                st.session_state["eng_insight"] = {
+                    "kind": "recommend",
+                    "title": "Recommended next action",
+                    "body": result["recommendation"],
+                }
     with col_b:
         if st.button("Explain overrun risk", use_container_width=True, key="eng_exp"):
             with st.spinner("Preparing risk explanation…"):
                 apply_openai_secrets()
-                st.session_state["eng_explain"] = explain_risk(selected, focus)
+                result = explain_risk(selected, focus)
+                st.session_state["eng_insight"] = {
+                    "kind": "explain",
+                    "title": "Overrun risk explanation",
+                    "body": result["explanation"],
+                }
 
-    if "eng_recommend" in st.session_state:
-        st.markdown("##### Recommended next action")
-        st.markdown(st.session_state["eng_recommend"]["recommendation"])
-
-    if "eng_explain" in st.session_state:
-        st.markdown("##### Overrun risk explanation")
-        st.markdown(st.session_state["eng_explain"]["explanation"])
+    insight = st.session_state.get("eng_insight")
+    if insight:
+        st.markdown(f"##### {insight['title']}")
+        st.markdown(insight["body"])
 
 
 if __name__ == "__main__":
