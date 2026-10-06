@@ -283,8 +283,12 @@ def test_advisor_uses_openai_path_when_key_present(trained_env, monkeypatch):
 def test_format_llm_markdown_passthrough_prose():
     from predictive_maintenance.agent.advisor import _format_llm_markdown
 
-    prose = "- **Primary delay driver:** AWP\n- **Next action:** Expedite NSN kit"
+    prose = (
+        "BUNO 168216 is mid-PMI with rising overrun risk. "
+        "The primary delay driver is AWP, so expedite the NSN kit before the next shop call."
+    )
     assert _format_llm_markdown(prose) == prose
+    assert not any(line.lstrip().startswith(("-", "*")) for line in prose.splitlines())
 
 
 def test_format_llm_markdown_unwraps_json_envelope():
@@ -304,6 +308,8 @@ def test_format_llm_markdown_unwraps_json_envelope():
     assert "AWP" in out
     assert "disposition_archive.md" in out
     assert not out.strip().startswith("{")
+    assert "- **" not in out
+    assert "\n\n" in out  # paragraph breaks
 
 
 def test_format_llm_markdown_handles_fenced_json():
@@ -318,6 +324,7 @@ def test_format_llm_markdown_handles_fenced_json():
     out = _format_llm_markdown(raw)
     assert "Brief production lead" in out
     assert "Engineering" in out
+    assert not out.lstrip().startswith("-")
 
 
 def test_zip_without_strict():

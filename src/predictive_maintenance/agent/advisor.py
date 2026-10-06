@@ -193,10 +193,10 @@ def _mock_explain(buno: str, component: str, health: dict, hits: list[dict]) -> 
 
 
 def _format_llm_markdown(text: str) -> str:
-    """Coerce model output to panel-friendly markdown.
+    """Coerce model output to panel-friendly narrative prose.
 
     Some models echo tool JSON or wrap answers in {"next_action": {...}}.
-    Prefer plain prose; if JSON is returned, extract recommendation fields.
+    Prefer plain paragraphs; if JSON is returned, unwrap into connected prose.
     """
     raw = (text or "").strip()
     if not raw:
@@ -228,45 +228,41 @@ def _format_llm_markdown(text: str) -> str:
     except Exception:
         return raw
 
-    return _json_payload_to_markdown(data) or raw
+    return _json_payload_to_prose(data) or raw
 
 
-def _json_payload_to_markdown(data: Any) -> str:
-    """Render common structured advisor payloads as concise bullets."""
+def _json_payload_to_prose(data: Any) -> str:
+    """Render common structured advisor payloads as short narrative paragraphs."""
     if isinstance(data, str):
         return data.strip()
 
     if isinstance(data, list):
-        bullets = [f"- {item}" for item in data if item]
-        return "\n".join(bullets)
+        parts = [str(item).strip() for item in data if str(item).strip()]
+        return " ".join(parts)
 
     if not isinstance(data, dict):
         return str(data)
 
-    # Unwrap common envelopes
+    # Unwrap common envelopes while keeping sibling fields
     for key in ("next_action", "recommendation", "result", "answer", "explanation"):
-        if key in data and isinstance(data[key], (dict, str, list)):
-            nested = data[key]
-            if isinstance(nested, str) and key in {"recommendation", "answer", "explanation"}:
-                # Keep sibling fields if present
-                break
-            if isinstance(nested, dict):
-                data = {**data, **nested}
-                break
-            if isinstance(nested, str):
-                return nested.strip()
-
-    lines: list[str] = []
-    title = data.get("title") or data.get("summary") or data.get("headline")
-    if title:
-        lines.append(f"**{title}**")
-        lines.append("")
+        if key in data and isinstance(data[key], dict):
+            data = {**data, **data[key]}
+            break
+        if key in data and isinstance(data[key], str) and key in {
+            "recommendation",
+            "answer",
+            "explanation",
+        }:
+            # Keep going so we can still pull driver/sources from siblings
+            pass
 
     rec = (
         data.get("recommendation")
         or data.get("next_action")
         or data.get("action")
         or data.get("recommended_action")
+        or data.get("summary")
+        or data.get("headline")
     )
     if isinstance(rec, dict):
         rec = (
@@ -275,8 +271,10 @@ def _json_payload_to_markdown(data: Any) -> str:
             or rec.get("text")
             or rec.get("summary")
         )
-    if rec:
-        lines.append(f"- **Next action:** {rec}")
+    if isinstance(rec, str):
+        rec = rec.strip()
+    else:
+        rec = ""
 
     driver = (
         data.get("primary_delay_driver")
@@ -285,16 +283,12 @@ def _json_payload_to_markdown(data: Any) -> str:
     )
     drivers = data.get("delay_drivers")
     if not driver and isinstance(drivers, dict):
-        # Pick loudest / primary if marked
         driver = drivers.get("primary") or drivers.get("primary_delay_driver")
         if not driver:
-            # e.g. {"AWP": true, "Engineering": false}
             true_keys = [k for k, v in drivers.items() if v]
             driver = ", ".join(true_keys) if true_keys else None
     if isinstance(drivers, list) and not driver:
         driver = ", ".join(str(x) for x in drivers)
-    if driver:
-        lines.append(f"- **Primary delay driver:** {driver}")
 
     cites = (
         data.get("citations")
@@ -306,24 +300,49 @@ def _json_payload_to_markdown(data: Any) -> str:
         cite_txt = ", ".join(
             (c.get("source") if isinstance(c, dict) else str(c)) for c in cites
         )
-        lines.append(f"- **Sources:** {cite_txt}")
     elif isinstance(cites, str) and cites.strip():
-        lines.append(f"- **Sources:** {cites.strip()}")
+        cite_txt = cites.strip()
+    else:
+        cite_txt = ""
 
     namp = data.get("namp_note") or data.get("advisory") or data.get("disclaimer")
-    if namp:
-        lines.append(f"- _{namp}_")
-    else:
-        lines.append(
-            "- _Advisory only under NAMP — cite authoritative tech data before acting._"
+    if not namp:
+        namp = (
+            "This guidance is advisory under NAMP and is not a substitute for "
+            "authoritative technical data."
         )
 
-    # If we only got opaque keys, fall back to compact bullets of remaining scalars
-    if len(lines) <= 1:
+    paras: list[str] = []
+    situ = data.get("situation") or data.get("context") or data.get("status")
+    if situ:
+        paras.append(str(situ).strip())
+
+    if driver and rec:
+        paras.append(
+            f"The primary delay driver is {driver}. The concrete next action is {rec}."
+        )
+    elif driver:
+        paras.append(f"The primary delay driver is {driver}.")
+    elif rec:
+        paras.append(str(rec))
+
+    if cite_txt:
+        paras.append(
+            f"Supporting guidance is drawn from {cite_txt}."
+        )
+
+    paras.append(str(namp).strip())
+
+    # Opaque payload fallback: join scalar fields into one paragraph
+    if len(paras) <= 1 and not rec and not driver:
+        bits = []
         for k, v in data.items():
             if isinstance(v, (str, int, float)) and str(v).strip():
-                lines.append(f"- **{k.replace('_', ' ').title()}:** {v}")
-    return "\n".join(lines).strip()
+                bits.append(f"{k.replace('_', ' ')}: {v}")
+        if bits:
+            paras = [". ".join(bits) + ".", str(namp).strip()]
+
+    return "\n\n".join(p for p in paras if p).strip()
 
 
 def _openai_recommend(
@@ -333,14 +352,16 @@ def _openai_recommend(
 
     client = OpenAI(api_key=api_key or openai_api_key())
     prompt = (
-        "You are briefing an FRCE MV-22 production lead / Commanding Officer.\n"
-        "Using ONLY the tool data below, write a concise plain-English markdown brief "
-        "(<=120 words). Use short bullets. Do NOT return JSON, YAML, or code fences.\n\n"
-        "Must include:\n"
-        "1) Primary delay driver (Over-and-above, AWP, or Engineering)\n"
-        "2) One concrete next action for the production team\n"
-        "3) Cite supporting doc filenames from the tool hits (e.g. disposition_archive.md)\n"
-        "4) End with a one-line NAMP advisory note (AI guidance is not authoritative tech data)\n\n"
+        "You are briefing an FRCE MV-22 production lead and Commanding Officer.\n"
+        "Using ONLY the tool data below, write 1–3 short paragraphs of narrative prose "
+        "(about 100–150 words total) that read like a leadership stand-up brief.\n\n"
+        "Story flow (in paragraph form, not a list):\n"
+        "situation → primary delay driver (Over-and-above, AWP, or Engineering) → "
+        "one concrete next action → cite supporting doc filenames inline "
+        "(e.g. disposition_archive.md) → close with a NAMP advisory note that AI "
+        "guidance is not authoritative tech data.\n\n"
+        "Hard rules: NO JSON, NO YAML, NO code fences, NO bullet lists, NO numbered lists. "
+        "Write connected sentences only.\n\n"
         f"BUNO: {buno}\nSystem focus: {component}\n"
         f"TOOL_DATA:\n{json.dumps(payload, default=str)[:6000]}"
     )
@@ -350,7 +371,8 @@ def _openai_recommend(
             {
                 "role": "system",
                 "content": (
-                    "Respond in plain-English markdown only. Never output a JSON object."
+                    "Respond in plain-English narrative paragraphs only. "
+                    "Never output JSON, bullets, or numbered lists."
                 ),
             },
             {"role": "user", "content": prompt},
@@ -369,13 +391,12 @@ def _openai_explain(
     context = "\n\n".join(f"[{h['source']}] {h['text']}" for h in hits)
     prompt = (
         "You are briefing an FRCE depot engineer and production lead.\n"
-        "Explain MV-22 PMI overrun risk in concise plain-English markdown (<=150 words). "
-        "Use short bullets. Do NOT return JSON, YAML, or code fences.\n\n"
-        "Must include:\n"
-        "1) Primary delay driver\n"
-        "2) Why the aircraft is at risk (top signals in plain language)\n"
-        "3) Cite source filenames from the context\n"
-        "4) One-line NAMP advisory note\n\n"
+        "Explain MV-22 PMI overrun risk in 1–3 short narrative paragraphs "
+        "(about 100–150 words). Read like a stand-up brief, not a checklist.\n\n"
+        "Story flow: situation and risk → primary delay driver and why "
+        "(plain-language signals) → cite source filenames inline → NAMP advisory close.\n\n"
+        "Hard rules: NO JSON, NO YAML, NO code fences, NO bullet lists, NO numbered lists. "
+        "Write connected sentences only.\n\n"
         f"Query: {query}\n"
         f"Signals: {json.dumps(focus.get('contributing_signals', [])[:4])}\n"
         f"Context:\n{context}"
@@ -386,7 +407,8 @@ def _openai_explain(
             {
                 "role": "system",
                 "content": (
-                    "Respond in plain-English markdown only. Never output a JSON object."
+                    "Respond in plain-English narrative paragraphs only. "
+                    "Never output JSON, bullets, or numbered lists."
                 ),
             },
             {"role": "user", "content": prompt},
